@@ -1,6 +1,6 @@
-# my-new-action
+# elm-dependency-submission
 
-[![Test & Lint](https://github.com/kachick/my-new-action/actions/workflows/test.yml/badge.svg?branch=main)](https://github.com/kachick/my-new-action/actions/workflows/test.yml)
+[![Test & Lint](https://github.com/kachick/elm-dependency-submission/actions/workflows/test.yml/badge.svg?branch=main)](https://github.com/kachick/elm-dependency-submission/actions/workflows/test.yml)
 
 There is a sin of omission as well as of commission.
 
@@ -17,7 +17,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Wait other jobs are passed or failed
-        uses: kachick/my-new-action@v1
+        uses: kachick/elm-dependency-submission@v1
         timeout-minutes: 15
         with:
           github-token: "${{ secrets.GITHUB_TOKEN }}"
@@ -44,12 +44,12 @@ permissions:
   # actions: read # For private repositories
 
 jobs:
-  example-of-my-new-action:
+  example-of-elm-dependency-submission:
     runs-on: ubuntu-latest
     if: ${{ github.actor == 'dependabot[bot]' }}
     steps:
       - uses: actions/checkout@v3
-      - uses: kachick/my-new-action@v1
+      - uses: kachick/elm-dependency-submission@v1
         timeout-minutes: 15
         with:
           github-token: "${{ secrets.GITHUB_TOKEN }}"
