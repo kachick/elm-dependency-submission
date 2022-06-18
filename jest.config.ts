@@ -9,6 +9,6 @@ const config: Config.InitialOptions = {
     '.+\\.ts$': 'ts-jest',
   },
   extensionsToTreatAsEsm: ['.ts'],
-  testMatch: ['**/__tests__/**/*.test.ts'],
+  testMatch: ['**/**/*.test.ts'],
 };
 export default config;

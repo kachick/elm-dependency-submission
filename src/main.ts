@@ -1,76 +1,21 @@
-import {
-  debug,
-  info,
-  getInput,
-  getBooleanInput,
-  setSecret,
-  setFailed,
-  isDebug,
-  startGroup,
-  endGroup,
-  error,
-} from '@actions/core';
-import { getOctokit, context } from '@actions/github';
+import { getInput, startGroup, endGroup } from '@actions/core';
+import { context } from '@actions/github';
+import { submitSnapshot } from '@github/dependency-submission-toolkit';
+import { normalize } from 'path';
 
-// eslint-disable-next-line import/no-unresolved
-import { fetchJobIDs } from './github-api.js';
-import {
-  wait,
-  // eslint-disable-next-line import/no-unresolved
-} from './wait.js';
+import { buildSnapshot } from './elm-package-detector';
 
 async function run(): Promise<void> {
   startGroup('Setup variables');
-  const {
-    repo: { repo, owner },
-    payload,
-    runId,
-    sha,
-  } = context;
-  const pr = payload.pull_request;
-  let commitSha = sha;
-  if (pr && 'head' in pr) {
-    const { head } = pr;
-    if (typeof head === 'object' && 'sha' in head) {
-      commitSha = head.sha;
-    } else {
-      if (isDebug()) {
-        debug(JSON.stringify(pr, null, 2));
-      }
-      error('github context has unexpected format: missing context.payload.pull_request.head.sha');
-      setFailed('unexpected failure occurred');
-      return;
-    }
-  }
+  const snapshot = buildSnapshot(
+    normalize(getInput('elm-json-path', { required: true, trimWhitespace: true })),
+    context.job,
+    context.runId.toString(),
+  );
 
-  info(JSON.stringify({ triggeredCommitSha: commitSha, ownRunId: runId }, null, 2));
+  // check dry_Run
 
-  const repositoryInfo = {
-    owner,
-    repo,
-  } as const;
-
-  const isEarlyExit = getBooleanInput('early-exit', { required: true, trimWhitespace: true });
-  const isDryRun = getBooleanInput('dry-run', { required: true, trimWhitespace: true });
-
-  const githubToken = getInput('github-token', { required: true, trimWhitespace: false });
-  setSecret(githubToken);
-  const octokit = getOctokit(githubToken);
-
-  endGroup();
-
-  if (isDryRun || isEarlyExit) {
-    return;
-  }
-
-  await wait(42);
-
-  startGroup('Get own job_id');
-
-  // eslint-disable-next-line camelcase
-  const ownJobIDs = await fetchJobIDs(octokit, { ...repositoryInfo, run_id: runId });
-  info(JSON.stringify({ ownJobIDs: [...ownJobIDs] }, null, 2));
-
+  await submitSnapshot(snapshot);
   endGroup();
 }
 

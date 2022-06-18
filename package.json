@@ -1,5 +1,5 @@
 {
-  "name": "my-new-action",
+  "name": "elm-dependency-submission",
   "version": "1.0.0",
   "description": "",
   "main": "lib/main.js",
@@ -19,14 +19,16 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/kachick/my-new-action.git"
+    "url": "git+https://github.com/kachick/elm-dependency-submission.git"
   },
   "keywords": [],
   "author": "Kenichi Kamiya <kachick1@gmail.com>",
   "license": "MIT",
   "dependencies": {
     "@actions/core": "^1.9.0",
-    "@actions/github": "^5.0.3"
+    "@actions/github": "^5.0.3",
+    "@github/dependency-submission-toolkit": "^1.2.0",
+    "packageurl-js": "^0.0.6"
   },
   "devDependencies": {
     "@octokit/types": "^6.35.0",
