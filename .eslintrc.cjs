@@ -12,7 +12,7 @@ module.exports = {
   ],
   overrides: [
     {
-      files: ['__tests__/**/*.ts'],
+      files: ['**/**/*.ts'],
       plugins: ['jest'],
       extends: ['plugin:jest/recommended'],
       rules: { 'filenames/match-regex': 'off' },

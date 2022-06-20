@@ -1,16 +1,8 @@
-import { context } from '@actions/github';
-
 import { readFileSync } from 'fs';
-
 import { BuildTarget, Package, PackageCache, Snapshot } from '@github/dependency-submission-toolkit';
+import { context } from '@actions/github';
 import { PackageURL } from 'packageurl-js';
-
-// https://www.typescriptlang.org/docs/handbook/release-notes/typescript-3-7.html#assertion-functions
-export function assertIsDefined<T>(val: T): asserts val is NonNullable<T> {
-  if (val === undefined || val === null) {
-    throw new Error(`Expected 'val' to be defined, but received ${val}`);
-  }
-}
+import { assertIsDefined } from './typeguards';
 
 type ElmDependencies = {
   direct: { [key: string]: string };
