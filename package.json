@@ -27,7 +27,8 @@
   "dependencies": {
     "@actions/core": "^1.9.0",
     "@actions/github": "^5.0.3",
-    "@github/dependency-submission-toolkit": "^1.2.0"
+    "@github/dependency-submission-toolkit": "^1.2.0",
+    "packageurl-js": "^0.0.6"
   },
   "devDependencies": {
     "@octokit/types": "^6.35.0",

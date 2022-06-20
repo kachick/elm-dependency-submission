@@ -12,10 +12,6 @@ inputs:
     description: 'Targetting `elm.json` path'
     required: true
     default: 'elm.json'
-  # elm-tooling-json-path:
-  #   description: 'Targetting `elm-tooling.json` path'
-  #   required: true
-  #   default: 'elm-tooling.json'
   dry-run:
     description: 'Avoid http requests for tests'
     required: false
