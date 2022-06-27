@@ -4,14 +4,14 @@ updates:
     directory: "/"
     schedule:
       interval: "daily"
-      time: "08:00"
-      timezone: "Asia/Tokyo"
   - package-ecosystem: "npm"
     directory: "/"
     schedule:
       interval: "daily"
-      time: "08:00"
-      timezone: "Asia/Tokyo"
     ignore:
       - dependency-name: "@types/*"
         update-types: ["version-update:semver-major"]
+  - package-ecosystem: "elm"
+    directory: "/elm-example/"
+    schedule:
+      interval: "daily"
