@@ -2,7 +2,7 @@ import { expect, test } from '@jest/globals';
 import { buildSnapshot } from './elm-package-detector';
 
 test('builds snapshot', () => {
-  const { manifests, detector, job, ref, version, scanned, sha } = buildSnapshot(
+  const { manifests, detector, job, version, scanned, sha } = buildSnapshot(
     'elm-example/elm.json',
     'awesome detect job',
     '42',
@@ -13,7 +13,6 @@ test('builds snapshot', () => {
     'version': '0.0.1',
   });
   expect(job).toEqual({ 'correlator': 'awesome detect job-elm-example/elm.json', 'id': '42' });
-  expect(ref).toEqual(undefined);
   expect(version).toEqual(0);
   expect(scanned).toEqual(expect.stringMatching('\\d{4}-\\d{2}-\\d{2}T\\S+'));
   expect(sha).toEqual(undefined);
