@@ -40,6 +40,8 @@ jobs:
         run: npm list
       - name: install dependencies
         run: npm install
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
       - name: Lint
         run: npm run lint
       - name: Build (Includes typecheck)
