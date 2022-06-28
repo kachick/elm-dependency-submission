@@ -2,8 +2,6 @@
 
 [![Test & Lint](https://github.com/kachick/elm-dependency-submission/actions/workflows/test.yml/badge.svg?branch=main)](https://github.com/kachick/elm-dependency-submission/actions/workflows/test.yml)
 
-There is a sin of omission as well as of commission.
-
 This GitHub Action send elm dependencies list to the [Dependency submission API](https://docs.github.com/en/code-security/supply-chain-security/understanding-your-software-supply-chain/using-the-dependency-submission-api). Dependencies then appear in your repository's dependency graph.
 
 ## Example
