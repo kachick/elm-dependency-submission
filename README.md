@@ -4,61 +4,33 @@
 
 There is a sin of omission as well as of commission.
 
-<img src="./assets/actual-log-v1.1.1-passed.png?raw=true" alt="Example of actual log" width=700>
+This GitHub Action send elm dependencies list to the [Dependency submission API](https://docs.github.com/en/code-security/supply-chain-security/understanding-your-software-supply-chain/using-the-dependency-submission-api). Dependencies then appear in your repository's dependency graph.
 
-# Usage
-
-Just requires `github-token` for minimum configuration.\
-I recommend to use `timeout-minutes` together with as easy fool proof.
+## Example
 
 ```yaml
-jobs:
-  with-waiting:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Wait other jobs are passed or failed
-        uses: kachick/elm-dependency-submission@v1
-        timeout-minutes: 15
-        with:
-          github-token: "${{ secrets.GITHUB_TOKEN }}"
-```
+name: Send Elm dependencies
+on:
+  push:
+    branches:
+      - main
 
-You can adjust as below.
-
-```yaml
-with:
-  github-token: "${{ secrets.GITHUB_TOKEN }}"
-  early-exit: 'false' # default 'true'
-```
-
-Below is a typical usecase. Assume test jobs defined in another workflow.
-
-```yaml
-name: Auto merge dependabot PRs if passed other jobs
-on: pull_request
-
+# The API requires write permission on the repository to submit dependencies
 permissions:
   contents: write
-  pull-requests: write
-  # checks: read # For private repositories
-  # actions: read # For private repositories
 
 jobs:
-  example-of-elm-dependency-submission:
+  elm-dependency-submission:
     runs-on: ubuntu-latest
-    if: ${{ github.actor == 'dependabot[bot]' }}
     steps:
-      - uses: actions/checkout@v3
-      - uses: kachick/elm-dependency-submission@v1
-        timeout-minutes: 15
+      - name: 'Checkout Repository'
+        uses: actions/checkout@v3
+      - name: Run snapshot action
+        uses: kachick/elm-dependency-submission@v1
         with:
-          github-token: "${{ secrets.GITHUB_TOKEN }}"
+            # Required: GITHUB_TOKEN will work. No needed PAT
+            token: "${{ secrets.GITHUB_TOKEN }}"
+            #
+            # Optional: Default "elm.json". Change it if different in your repository
+            elm-json-path: elm.json
 ```
-
-# License
-
-The scripts and documentation in this project are released under the [MIT License](LICENSE)
-
-# NOTE - Motivation to create own template
-
-[actions/typescript-action](https://github.com/actions/typescript-action) is an official template. However looks not frequency updated.
