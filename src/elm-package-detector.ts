@@ -58,11 +58,23 @@ export function parseDependencies(cache: PackageCache, dependencies: { [key: str
 
 export function createBuildTarget(elmJSON: ElmJSON): BuildTarget {
   const cache = new PackageCache();
-  const topLevelDependencies = parseDependencies(cache, elmJSON.dependencies.direct);
+  const topLevelDirectDependencies = parseDependencies(cache, elmJSON.dependencies.direct);
+  const topLevelIndirectDependencies = parseDependencies(cache, elmJSON.dependencies.indirect);
+  const testDirectDependencies = parseDependencies(cache, elmJSON['test-dependencies'].direct);
+  const testIndirectDependencies = parseDependencies(cache, elmJSON['test-dependencies'].indirect);
 
   const buildTarget = new BuildTarget(elmJSON.name || 'NONAME');
-  for (const pkg of topLevelDependencies) {
+  for (const pkg of topLevelDirectDependencies) {
     buildTarget.addBuildDependency(pkg);
+  }
+  for (const pkg of topLevelIndirectDependencies) {
+    buildTarget.addIndirectDependency(pkg, 'runtime');
+  }
+  for (const pkg of testDirectDependencies) {
+    buildTarget.addDirectDependency(pkg, 'development');
+  }
+  for (const pkg of testIndirectDependencies) {
+    buildTarget.addIndirectDependency(pkg, 'development');
   }
   return buildTarget;
 }
