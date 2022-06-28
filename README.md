@@ -35,6 +35,10 @@ jobs:
             elm-json-path: elm.json
 ```
 
+You can see the working image at [here](https://github.com/kachick/elm-dependency-submission/network/dependencies). It is parsing [elm-example/elm.json](elm-example/elm.json).
+
+<img src="./assets/snapshot.png?raw=true" alt="Example of snapshot" width=700>
+
 ## NOTE
 
 Author is a newbie of elm-lang...
