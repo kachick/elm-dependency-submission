@@ -34,3 +34,7 @@ jobs:
             # Optional: Default "elm.json". Change it if different in your repository
             elm-json-path: elm.json
 ```
+
+## NOTE
+
+Author is a newbie of elm-lang...
