@@ -2,7 +2,7 @@ import { expect, test } from '@jest/globals';
 import { buildSnapshot } from './elm-package-detector';
 
 test('builds snapshot', () => {
-  const { manifests, detector, job, version, scanned, sha } = buildSnapshot(
+  const { manifests, detector, job, version, scanned } = buildSnapshot(
     'elm-example/elm.json',
     'awesome detect job',
     '42',
