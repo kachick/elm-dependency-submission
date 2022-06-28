@@ -15,7 +15,6 @@ test('builds snapshot', () => {
   expect(job).toEqual({ 'correlator': 'awesome detect job-elm-example/elm.json', 'id': '42' });
   expect(version).toEqual(0);
   expect(scanned).toEqual(expect.stringMatching('\\d{4}-\\d{2}-\\d{2}T\\S+'));
-  expect(sha).toEqual(undefined);
   expect(JSON.parse(JSON.stringify(manifests['mobu-elm'])).resolved).toEqual({
     'pkg:elm/elm-community/list-extra@8.5.2': {
       'dependencies': [],
