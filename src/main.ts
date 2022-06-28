@@ -13,8 +13,6 @@ async function run(): Promise<void> {
     context.runId.toString(),
   );
 
-  // check dry_Run
-
   await submitSnapshot(snapshot);
   endGroup();
 }
