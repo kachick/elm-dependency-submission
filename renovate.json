@@ -3,7 +3,12 @@
   "extends": [
     "local>kachick/renovate-config-dprint"
   ],
-  "labels": [
-    "renovate"
+  "labels": ["dependencies", "renovate"],
+  "packageRules": [
+    {
+      "groupName": "node",
+      "matchPackageNames": ["node"],
+      "enabled": false
+    }
   ]
 }
