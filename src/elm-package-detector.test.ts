@@ -1,7 +1,7 @@
 import { expect, test } from '@jest/globals';
-import { buildSnapshot } from './elm-package-detector';
+import { buildSnapshot, createBuildTarget } from './elm-package-detector';
 
-test('builds snapshot', () => {
+test('builds snapshot for valid elm.json', () => {
   const { manifests, detector, job, version, scanned } = buildSnapshot(
     'elm-example/elm.json',
     'awesome detect job',
@@ -83,4 +83,10 @@ test('builds snapshot', () => {
       'scope': 'runtime',
     },
   });
+});
+
+test('throws an error when given an invalid format of elm.json', () => {
+  expect(() => createBuildTarget(JSON.stringify({ 'thisFieldIsNotAnElmJSON': 42 }))).toThrowError(
+    /given file is an invalid format of elm.json/,
+  );
 });
