@@ -2,8 +2,8 @@ name: 'elm-dependency-submission'
 description: 'Send elm dependency snapshot to GitHub API'
 author: 'Kenichi Kamiya <kachick1@gmail.com>'
 branding:
-  icon: 'check-circle'
-  color: 'green'
+  icon: 'upload'
+  color: 'blue'
 inputs:
   token:
     description: 'Basically GITHUB_TOKEN is enough.'
