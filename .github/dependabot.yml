@@ -1,17 +1,17 @@
 version: 2
 updates:
-  - package-ecosystem: "github-actions"
-    directory: "/"
+  - package-ecosystem: 'github-actions'
+    directory: '/'
     schedule:
-      interval: "daily"
-  - package-ecosystem: "npm"
-    directory: "/"
+      interval: 'daily'
+  - package-ecosystem: 'npm'
+    directory: '/'
     schedule:
-      interval: "daily"
+      interval: 'daily'
     ignore:
-      - dependency-name: "@types/*"
-        update-types: ["version-update:semver-major"]
-  - package-ecosystem: "elm"
-    directory: "/elm-example/"
+      - dependency-name: '@types/*'
+        update-types: ['version-update:semver-major']
+  - package-ecosystem: 'elm'
+    directory: '/elm-example/'
     schedule:
-      interval: "daily"
+      interval: 'daily'
