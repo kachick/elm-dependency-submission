@@ -4,11 +4,5 @@
     "local>kachick/renovate-config-dprint"
   ],
   "labels": ["dependencies", "renovate"],
-  "packageRules": [
-    {
-      "groupName": "node",
-      "matchPackageNames": ["node"],
-      "enabled": false
-    }
-  ]
+  "enabledManagers": ["regex"]
 }
