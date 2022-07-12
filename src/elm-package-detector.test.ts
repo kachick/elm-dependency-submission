@@ -16,9 +16,9 @@ test('builds snapshot for valid elm.json', () => {
   expect(version).toEqual(0);
   expect(scanned).toEqual(expect.stringMatching('\\d{4}-\\d{2}-\\d{2}T\\S+'));
   expect(JSON.parse(JSON.stringify(manifests['mobu-elm'])).resolved).toEqual({
-    'pkg:elm/elm-community/list-extra@8.5.2': {
+    'pkg:elm/elm-community/list-extra@8.6.0': {
       'dependencies': [],
-      'package_url': 'pkg:elm/elm-community/list-extra@8.5.2',
+      'package_url': 'pkg:elm/elm-community/list-extra@8.6.0',
       'relationship': 'direct',
       'scope': 'runtime',
     },
