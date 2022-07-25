@@ -17,4 +17,4 @@ async function run(): Promise<void> {
   endGroup();
 }
 
-run();
+void run();

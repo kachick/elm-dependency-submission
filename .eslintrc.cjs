@@ -4,11 +4,11 @@ module.exports = {
     es2021: true,
     'jest/globals': true,
   },
+  plugins: ['deprecation', '@typescript-eslint', 'import'],
   extends: [
-    'eslint:recommended',
     'plugin:@typescript-eslint/recommended',
-    'plugin:@typescript-eslint/eslint-recommended',
-    'plugin:github/recommended',
+    'plugin:@typescript-eslint/recommended-requiring-type-checking',
+    'plugin:@typescript-eslint/strict',
   ],
   overrides: [
     {
@@ -30,9 +30,10 @@ module.exports = {
     ],
     'prettier/prettier': 'off',
     'no-mixed-operators': 'error',
+    '@typescript-eslint/prefer-readonly': 'error',
+    '@typescript-eslint/prefer-readonly-parameter-types': ['error', { 'ignoreInferredTypes': true }],
   },
   parser: '@typescript-eslint/parser',
-  plugins: ['deprecation', '@typescript-eslint', 'import', 'github'],
   parserOptions: {
     ecmaVersion: 12,
     sourceType: 'module',

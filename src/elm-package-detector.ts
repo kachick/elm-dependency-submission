@@ -59,7 +59,10 @@ export function parseNameAndNamespace(depPath: string): [string, string] {
   }
 }
 
-export function parseDependencies(cache: PackageCache, dependencies: ElmDependencies): Array<Package> {
+export function parseDependencies(
+  cache: Readonly<PackageCache>,
+  dependencies: Readonly<ElmDependencies>,
+): Package[] {
   return Object.entries(dependencies).map(([depPath, version]) => {
     const [namespace, name] = parseNameAndNamespace(depPath);
     const packageUrl = new PackageURL('elm', namespace, name, version, null, null);
@@ -82,7 +85,7 @@ export function createBuildTarget(elmJSONString: string): BuildTarget {
   const testDirectDependencies = parseDependencies(cache, elmJSON['test-dependencies'].direct);
   const testIndirectDependencies = parseDependencies(cache, elmJSON['test-dependencies'].indirect);
 
-  const buildTarget = new BuildTarget(elmJSON.name || 'NONAME');
+  const buildTarget = new BuildTarget(elmJSON.name ?? 'NONAME');
   for (const pkg of topLevelDirectDependencies) {
     buildTarget.addBuildDependency(pkg);
   }
