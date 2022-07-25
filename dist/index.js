@@ -75,7 +75,7 @@ function createBuildTarget(elmJSONString) {
     const topLevelIndirectDependencies = parseDependencies(cache, elmJSON.dependencies.indirect);
     const testDirectDependencies = parseDependencies(cache, elmJSON['test-dependencies'].direct);
     const testIndirectDependencies = parseDependencies(cache, elmJSON['test-dependencies'].indirect);
-    const buildTarget = new dependency_submission_toolkit_1.BuildTarget(elmJSON.name || 'NONAME');
+    const buildTarget = new dependency_submission_toolkit_1.BuildTarget(elmJSON.name ?? 'NONAME');
     for (const pkg of topLevelDirectDependencies) {
         buildTarget.addBuildDependency(pkg);
     }
@@ -119,6 +119,7 @@ exports.assertIsDefined = void 0;
 // https://www.typescriptlang.org/docs/handbook/release-notes/typescript-3-7.html#assertion-functions
 function assertIsDefined(val) {
     if (val === undefined || val === null) {
+        // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
         throw new Error(`Expected 'val' to be defined, but received ${val}`);
     }
 }
@@ -21775,7 +21776,7 @@ async function run() {
     await (0, dependency_submission_toolkit_1.submitSnapshot)(snapshot);
     (0, core_1.endGroup)();
 }
-run();
+void run();
 
 })();
 
