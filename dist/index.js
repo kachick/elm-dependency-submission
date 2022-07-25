@@ -15679,7 +15679,7 @@ function onceStrict (fn) {
 /***/ 8915:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
-/*
+/*!
 Copyright (c) the purl authors
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -15713,7 +15713,7 @@ module.exports = {
 /***/ 8749:
 /***/ ((module) => {
 
-/*
+/*!
 Copyright (c) the purl authors
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -15785,8 +15785,8 @@ class PackageURL {
     if (this.namespace) {
       purl.push(
         encodeURIComponent(this.namespace)
-          .replace('%3A', ':')
-          .replace('%2F', '/')
+          .replace(/%3A/g, ':')
+          .replace(/%2F/g, '/')
         );
       purl.push('/');
     }
