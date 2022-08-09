@@ -27,7 +27,7 @@
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-import": "^2.26.0",
     "eslint-plugin-prettier": "^4.2.1",
-    "vite": "^3.0.4",
+    "vite": "^3.0.5",
     "vite-plugin-elm": "^2.7.2"
   }
 }
