@@ -87,7 +87,7 @@ test('builds snapshot for valid elm.json', () => {
 });
 
 test('throws an error when given an invalid format of elm.json', () => {
-  expect(() => createBuildTarget(JSON.stringify({ 'thisFieldIsNotAnElmJSON': 42 }))).toThrowError(
+  expect(() => createBuildTarget(JSON.stringify({ 'thisFieldIsNotAnElmJSON': 42 }))).toThrow(
     /given file is an invalid format of elm.json/,
   );
 });
