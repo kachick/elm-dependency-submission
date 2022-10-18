@@ -5,5 +5,11 @@
     "github>kachick/renovate-config-dprint"
   ],
   "labels": ["dependencies", "renovate"],
-  "enabledManagers": ["regex"]
+  "enabledManagers": ["regex"],
+  "packageRules": [
+    {
+      "matchPackageNames": ["nodejs/node"],
+      "allowedVersions": "/^v?16\\./"
+    }
+  ]
 }
