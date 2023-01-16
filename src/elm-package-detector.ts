@@ -111,7 +111,7 @@ export function buildSnapshot(elmJsonPath: string, job: string, runId: string): 
     },
     context,
     {
-      correlator: `${job}-${elmJsonPath}`,
+      correlator: `${job}: ${elmJsonPath}`,
       id: runId,
     },
   );

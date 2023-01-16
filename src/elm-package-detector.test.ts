@@ -3,8 +3,8 @@ import { buildSnapshot, createBuildTarget } from './elm-package-detector';
 
 test('builds snapshot for valid elm.json', () => {
   const { manifests, detector, job, version, scanned } = buildSnapshot(
-    'elm-example/elm.json',
-    'awesome detect job',
+    'emobu/elm.json',
+    'awesome detect',
     '42',
   );
   expect(detector).toEqual({
@@ -12,14 +12,14 @@ test('builds snapshot for valid elm.json', () => {
     'url': 'https://github.com/kachick/elm-dependency-submission',
     'version': '0.0.1',
   });
-  expect(job).toEqual({ 'correlator': 'awesome detect job-elm-example/elm.json', 'id': '42' });
+  expect(job).toEqual({ 'correlator': 'awesome detect: emobu/elm.json', 'id': '42' });
   expect(version).toEqual(0);
   expect(scanned).toEqual(expect.stringMatching('\\d{4}-\\d{2}-\\d{2}T\\S+'));
   // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-  expect(JSON.parse(JSON.stringify(manifests['mobu-elm'])).resolved).toEqual({
-    'pkg:elm/elm-community/list-extra@8.6.0': {
+  expect(JSON.parse(JSON.stringify(manifests['NONAME'])).resolved).toEqual({
+    'pkg:elm/elm-community/list-extra@8.7.0': {
       'dependencies': [],
-      'package_url': 'pkg:elm/elm-community/list-extra@8.6.0',
+      'package_url': 'pkg:elm/elm-community/list-extra@8.7.0',
       'relationship': 'direct',
       'scope': 'runtime',
     },
@@ -29,9 +29,9 @@ test('builds snapshot for valid elm.json', () => {
       'relationship': 'direct',
       'scope': 'runtime',
     },
-    'pkg:elm/elm-explorations/test@1.2.2': {
+    'pkg:elm/elm-explorations/test@2.1.0': {
       'dependencies': [],
-      'package_url': 'pkg:elm/elm-explorations/test@1.2.2',
+      'package_url': 'pkg:elm/elm-explorations/test@2.1.0',
       'relationship': 'direct',
       'scope': 'development',
     },
@@ -40,6 +40,12 @@ test('builds snapshot for valid elm.json', () => {
       'package_url': 'pkg:elm/elm/browser@1.0.2',
       'relationship': 'direct',
       'scope': 'runtime',
+    },
+    'pkg:elm/elm/bytes@1.0.8': {
+      'dependencies': [],
+      'package_url': 'pkg:elm/elm/bytes@1.0.8',
+      'relationship': 'indirect',
+      'scope': 'development',
     },
     'pkg:elm/elm/core@1.0.5': {
       'dependencies': [],
@@ -77,9 +83,9 @@ test('builds snapshot for valid elm.json', () => {
       'relationship': 'indirect',
       'scope': 'runtime',
     },
-    'pkg:elm/elm/virtual-dom@1.0.2': {
+    'pkg:elm/elm/virtual-dom@1.0.3': {
       'dependencies': [],
-      'package_url': 'pkg:elm/elm/virtual-dom@1.0.2',
+      'package_url': 'pkg:elm/elm/virtual-dom@1.0.3',
       'relationship': 'indirect',
       'scope': 'runtime',
     },

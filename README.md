@@ -33,7 +33,7 @@ jobs:
             elm-json-path: elm.json
 ```
 
-You can see the working image at [here](https://github.com/kachick/elm-dependency-submission/network/dependencies). It is parsing [elm-example/elm.json](elm-example/elm.json).
+You can see the working image at [here](https://github.com/kachick/elm-dependency-submission/network/dependencies). It is parsing [emobu/elm.json](https://github.com/mobu-of-the-world/emobu/blob/main/elm.json).
 
 <img src="./assets/snapshot.png?raw=true" alt="Example of snapshot" width=700>
 

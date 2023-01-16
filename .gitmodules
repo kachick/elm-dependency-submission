@@ -1,0 +1,3 @@
+[submodule "emobu"]
+	path = emobu
+	url = git@github.com:mobu-of-the-world/emobu.git

@@ -29,7 +29,10 @@ jobs:
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@v3
+        with:
+          submodules: true # Fetch example project
+          fetch-depth: 0 # Fetch all history for .GitInfo and .Lastmod
       - uses: ./
         with:
           token: '${{ secrets.GITHUB_TOKEN }}'
-          elm-json-path: elm-example/elm.json
+          elm-json-path: emobu/elm.json

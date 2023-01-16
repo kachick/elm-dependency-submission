@@ -11,14 +11,3 @@ updates:
     ignore:
       - dependency-name: '@types/*'
         update-types: ['version-update:semver-major']
-  - package-ecosystem: 'elm'
-    directory: '/elm-example/'
-    schedule:
-      interval: 'daily'
-  - package-ecosystem: 'npm'
-    directory: '/elm-example/'
-    schedule:
-      interval: 'daily'
-    ignore:
-      - dependency-name: '@types/*'
-        update-types: ['version-update:semver-major']
