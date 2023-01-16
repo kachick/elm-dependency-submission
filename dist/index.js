@@ -98,7 +98,7 @@ function buildSnapshot(elmJsonPath, job, runId) {
         url: 'https://github.com/kachick/elm-dependency-submission',
         version: '0.0.1',
     }, github_1.context, {
-        correlator: `${job}-${elmJsonPath}`,
+        correlator: `${job}: ${elmJsonPath}`,
         id: runId,
     });
     snapshot.addManifest(buildTarget);
