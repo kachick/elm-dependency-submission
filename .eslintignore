@@ -3,4 +3,4 @@ dist/
 lib/
 jest.config.cjs
 .eslintrc.cjs
-elm-example
+emobu
