@@ -39,7 +39,7 @@ export function parseNameAndNamespace(depPath: string): [string, string] {
     case 1: {
       const [name] = namespaceAndName;
       assertIsDefined(name);
-      return ['', encodeURIComponent(name)];
+      return ['', name];
     }
     case 2: {
       const [namespace, name] = namespaceAndName;
@@ -47,8 +47,8 @@ export function parseNameAndNamespace(depPath: string): [string, string] {
       assertIsDefined(name);
 
       return [
-        encodeURIComponent(namespace),
-        encodeURIComponent(name),
+        `github.com/${namespace}`,
+        name,
       ];
     }
     default: {
