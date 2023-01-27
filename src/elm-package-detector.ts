@@ -59,14 +59,17 @@ export function parseNameAndNamespace(depPath: string): [string, string] {
   }
 }
 
+export function parsrePackage(depPath: string, version: string): PackageURL {
+  const [namespace, name] = parseNameAndNamespace(depPath);
+  return new PackageURL('elm', namespace, name, version, null, null);
+}
+
 export function parseDependencies(
   cache: Readonly<PackageCache>,
   dependencies: Readonly<ElmDependencies>,
 ): Package[] {
   return Object.entries(dependencies).map(([depPath, version]) => {
-    const [namespace, name] = parseNameAndNamespace(depPath);
-    const packageUrl = new PackageURL('elm', namespace, name, version, null, null);
-    return cache.package(packageUrl);
+    return cache.package(parsrePackage(depPath, version));
   });
 }
 

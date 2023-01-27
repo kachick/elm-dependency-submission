@@ -1,5 +1,5 @@
 import { expect, test } from '@jest/globals';
-import { buildSnapshot, createBuildTarget, parseNameAndNamespace } from './elm-package-detector';
+import { buildSnapshot, createBuildTarget, parseNameAndNamespace, parsrePackage } from './elm-package-detector';
 
 test('builds snapshot for valid elm.json', () => {
   const { manifests, detector, job, version, scanned } = buildSnapshot(
@@ -100,4 +100,10 @@ test('throws an error when given an invalid format of elm.json', () => {
 
 test('handles github repository', () => {
   expect(parseNameAndNamespace('elm-community/list-extra')).toStrictEqual(['github.com/elm-community', 'list-extra']);
+});
+
+test('parsrePackage', () => {
+  expect(parsrePackage('elm-explorations/test', '2.1.0').toString()).toStrictEqual(
+    'pkg:elm/github.com/elm-explorations/test@2.1.0',
+  );
 });
