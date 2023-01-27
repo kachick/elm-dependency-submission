@@ -39,15 +39,15 @@ function parseNameAndNamespace(depPath) {
         case 1: {
             const [name] = namespaceAndName;
             (0, typeguards_1.assertIsDefined)(name);
-            return ['', encodeURIComponent(name)];
+            return ['', name];
         }
         case 2: {
             const [namespace, name] = namespaceAndName;
             (0, typeguards_1.assertIsDefined)(namespace);
             (0, typeguards_1.assertIsDefined)(name);
             return [
-                encodeURIComponent(namespace),
-                encodeURIComponent(name),
+                `github.com/${namespace}`,
+                name,
             ];
         }
         default: {
