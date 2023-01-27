@@ -7,7 +7,7 @@
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.buildSnapshot = exports.createBuildTarget = exports.parseDependencies = exports.parseNameAndNamespace = void 0;
+exports.buildSnapshot = exports.createBuildTarget = exports.parseDependencies = exports.parsrePackage = exports.parseNameAndNamespace = void 0;
 const fs_1 = __nccwpck_require__(7147);
 const dependency_submission_toolkit_1 = __nccwpck_require__(9810);
 const github_1 = __nccwpck_require__(5438);
@@ -56,15 +56,18 @@ function parseNameAndNamespace(depPath) {
     }
 }
 exports.parseNameAndNamespace = parseNameAndNamespace;
+function parsrePackage(depPath, version) {
+    const [namespace, name] = parseNameAndNamespace(depPath);
+    return new packageurl_js_1.PackageURL('elm', namespace, name, version, null, null);
+}
+exports.parsrePackage = parsrePackage;
 function parseDependencies(cache, dependencies) {
     return Object.entries(dependencies).map(([depPath, version]) => {
-        const [namespace, name] = parseNameAndNamespace(depPath);
-        const packageUrl = new packageurl_js_1.PackageURL('elm', namespace, name, version, null, null);
-        return cache.package(packageUrl);
+        return cache.package(parsrePackage(depPath, version));
     });
 }
 exports.parseDependencies = parseDependencies;
-function createBuildTarget(elmJSONString) {
+function createBuildTarget(elmJSONString, fallbackName) {
     const maybeElmJSON = elmJSONSchema.safeParse(jsonSchema.parse(JSON.parse(elmJSONString)));
     if (!maybeElmJSON.success) {
         throw new Error(`given file is an invalid format of elm.json: ${maybeElmJSON.error.message}`);
@@ -75,7 +78,7 @@ function createBuildTarget(elmJSONString) {
     const topLevelIndirectDependencies = parseDependencies(cache, elmJSON.dependencies.indirect);
     const testDirectDependencies = parseDependencies(cache, elmJSON['test-dependencies'].direct);
     const testIndirectDependencies = parseDependencies(cache, elmJSON['test-dependencies'].indirect);
-    const buildTarget = new dependency_submission_toolkit_1.BuildTarget(elmJSON.name ?? 'NONAME');
+    const buildTarget = new dependency_submission_toolkit_1.BuildTarget(elmJSON.name ?? fallbackName);
     for (const pkg of topLevelDirectDependencies) {
         buildTarget.addBuildDependency(pkg);
     }
@@ -92,7 +95,7 @@ function createBuildTarget(elmJSONString) {
 }
 exports.createBuildTarget = createBuildTarget;
 function buildSnapshot(elmJsonPath, job, runId) {
-    const buildTarget = createBuildTarget((0, fs_1.readFileSync)(elmJsonPath).toString());
+    const buildTarget = createBuildTarget((0, fs_1.readFileSync)(elmJsonPath).toString(), elmJsonPath);
     const snapshot = new dependency_submission_toolkit_1.Snapshot({
         name: 'kachick/elm-dependency-submission',
         url: 'https://github.com/kachick/elm-dependency-submission',
