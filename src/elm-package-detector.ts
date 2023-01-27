@@ -70,7 +70,7 @@ export function parseDependencies(
   });
 }
 
-export function createBuildTarget(elmJSONString: string): BuildTarget {
+export function createBuildTarget(elmJSONString: string, fallbackName: string): BuildTarget {
   const maybeElmJSON = elmJSONSchema.safeParse(jsonSchema.parse(JSON.parse(elmJSONString)));
 
   if (!maybeElmJSON.success) {
@@ -85,7 +85,7 @@ export function createBuildTarget(elmJSONString: string): BuildTarget {
   const testDirectDependencies = parseDependencies(cache, elmJSON['test-dependencies'].direct);
   const testIndirectDependencies = parseDependencies(cache, elmJSON['test-dependencies'].indirect);
 
-  const buildTarget = new BuildTarget(elmJSON.name ?? 'NONAME');
+  const buildTarget = new BuildTarget(elmJSON.name ?? fallbackName);
   for (const pkg of topLevelDirectDependencies) {
     buildTarget.addBuildDependency(pkg);
   }
@@ -102,7 +102,7 @@ export function createBuildTarget(elmJSONString: string): BuildTarget {
 }
 
 export function buildSnapshot(elmJsonPath: string, job: string, runId: string): Snapshot {
-  const buildTarget = createBuildTarget(readFileSync(elmJsonPath).toString());
+  const buildTarget = createBuildTarget(readFileSync(elmJsonPath).toString(), elmJsonPath);
   const snapshot = new Snapshot(
     {
       name: 'kachick/elm-dependency-submission',

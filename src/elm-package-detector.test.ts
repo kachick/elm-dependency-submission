@@ -16,7 +16,7 @@ test('builds snapshot for valid elm.json', () => {
   expect(version).toEqual(0);
   expect(scanned).toEqual(expect.stringMatching('\\d{4}-\\d{2}-\\d{2}T\\S+'));
   // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-  expect(JSON.parse(JSON.stringify(manifests['NONAME'])).resolved).toEqual({
+  expect(JSON.parse(JSON.stringify(manifests['emobu/elm.json'])).resolved).toEqual({
     'pkg:elm/github.com/elm-community/list-extra@8.7.0': {
       'dependencies': [],
       'package_url': 'pkg:elm/github.com/elm-community/list-extra@8.7.0',
@@ -93,7 +93,7 @@ test('builds snapshot for valid elm.json', () => {
 });
 
 test('throws an error when given an invalid format of elm.json', () => {
-  expect(() => createBuildTarget(JSON.stringify({ 'thisFieldIsNotAnElmJSON': 42 }))).toThrow(
+  expect(() => createBuildTarget(JSON.stringify({ 'thisFieldIsNotAnElmJSON': 42 }), 'elm.json')).toThrow(
     /given file is an invalid format of elm.json/,
   );
 });
