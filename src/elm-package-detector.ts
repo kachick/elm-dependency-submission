@@ -47,7 +47,7 @@ export function parseNameAndNamespace(depPath: string): [string, string] {
       assertIsDefined(name);
 
       return [
-        `github.com/${namespace}`,
+        namespace,
         name,
       ];
     }
@@ -61,7 +61,7 @@ export function parseNameAndNamespace(depPath: string): [string, string] {
 
 export function parsrePackage(depPath: string, version: string): PackageURL {
   const [namespace, name] = parseNameAndNamespace(depPath);
-  return new PackageURL('elm', namespace, name, version, null, null);
+  return new PackageURL('github', namespace, name, version, null, null);
 }
 
 export function parseDependencies(
