@@ -46,7 +46,7 @@ function parseNameAndNamespace(depPath) {
             (0, typeguards_1.assertIsDefined)(namespace);
             (0, typeguards_1.assertIsDefined)(name);
             return [
-                `github.com/${namespace}`,
+                namespace,
                 name,
             ];
         }
@@ -58,7 +58,7 @@ function parseNameAndNamespace(depPath) {
 exports.parseNameAndNamespace = parseNameAndNamespace;
 function parsrePackage(depPath, version) {
     const [namespace, name] = parseNameAndNamespace(depPath);
-    return new packageurl_js_1.PackageURL('elm', namespace, name, version, null, null);
+    return new packageurl_js_1.PackageURL('github', namespace, name, version, null, null);
 }
 exports.parsrePackage = parsrePackage;
 function parseDependencies(cache, dependencies) {
