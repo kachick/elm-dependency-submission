@@ -10,9 +10,11 @@
     "lint:fix": "eslint --fix src/**/*.ts *.ts",
     "lint:check": "eslint src/**/*.ts *.ts",
     "prepackage": "rimraf lib dist",
-    "package": "tsc --project tsconfig.build.json && ncc build",
+    "package": "esbuild src/main.ts --bundle --platform=node --target=node16 --packages=external --outfile=lib/main.js && ncc build",
     "postpackage": "rimraf lib",
-    "test": "jest"
+    "test": "jest",
+    "typecheck": "tsc",
+    "repl": "tsx"
   },
   "repository": {
     "type": "git",

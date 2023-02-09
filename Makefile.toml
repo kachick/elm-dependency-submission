@@ -44,12 +44,12 @@ script = [
   "npm test",
 ]
 
-# [tasks.typecheck]
-# category = "Tools"
-# description = 'Correctness in TypeScript'
-# script = [
-#   "npm run typecheck",
-# ]
+[tasks.typecheck]
+category = "Tools"
+description = 'Correctness in TypeScript'
+script = [
+  "npm run typecheck",
+]
 
 [tasks.package]
 category = "Tools"
@@ -61,7 +61,7 @@ script = [
 [tasks.check]
 category = "Tools"
 description = 'Parallel runner for all tests and linters'
-run_task = { name = ["test-ts", "lint-check"], parallel = true }
+run_task = { name = ["test-ts", "typecheck", "lint-check"], parallel = true }
 
 [tasks.all]
 category = "Tools"

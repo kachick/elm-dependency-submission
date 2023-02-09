@@ -1,136 +1,6 @@
 /******/ (() => { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
 
-/***/ 5714:
-/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.buildSnapshot = exports.createBuildTarget = exports.parseDependencies = exports.parsrePackage = exports.parseNameAndNamespace = void 0;
-const fs_1 = __nccwpck_require__(7147);
-const dependency_submission_toolkit_1 = __nccwpck_require__(9810);
-const github_1 = __nccwpck_require__(5438);
-const packageurl_js_1 = __nccwpck_require__(8915);
-const typeguards_1 = __nccwpck_require__(5251);
-const zod_1 = __nccwpck_require__(3301);
-// https://github.com/colinhacks/zod/tree/20a45a20a344c48fc8cd1b630adcb822d439e70d#json-type
-const literalSchema = zod_1.z.union([zod_1.z.string(), zod_1.z.number(), zod_1.z.boolean(), zod_1.z.null()]);
-const jsonSchema = zod_1.z.lazy(() => zod_1.z.union([literalSchema, zod_1.z.array(jsonSchema), zod_1.z.record(jsonSchema)]));
-const elmDependenciesSchema = zod_1.z.record(zod_1.z.string(), zod_1.z.string());
-const elmDependenciesSetSchema = zod_1.z.object({
-    direct: elmDependenciesSchema,
-    indirect: elmDependenciesSchema,
-});
-// https://github.com/elm/compiler/blob/9f1bbb558095d81edba5796099fee9981eac255a/docs/elm.json/package.md
-const elmJSONSchema = zod_1.z.object({
-    type: zod_1.z.enum(['application', 'package']),
-    name: zod_1.z.optional(zod_1.z.string()),
-    license: zod_1.z.optional(zod_1.z.string()),
-    version: zod_1.z.optional(zod_1.z.string()),
-    'exposed-modules': zod_1.z.optional(zod_1.z.array(zod_1.z.string())),
-    'elm-version': zod_1.z.string(),
-    dependencies: elmDependenciesSetSchema,
-    'test-dependencies': elmDependenciesSetSchema,
-});
-function parseNameAndNamespace(depPath) {
-    const namespaceAndName = depPath.split('/');
-    switch (namespaceAndName.length) {
-        case 1: {
-            const [name] = namespaceAndName;
-            (0, typeguards_1.assertIsDefined)(name);
-            return ['', name];
-        }
-        case 2: {
-            const [namespace, name] = namespaceAndName;
-            (0, typeguards_1.assertIsDefined)(namespace);
-            (0, typeguards_1.assertIsDefined)(name);
-            return [
-                namespace,
-                name,
-            ];
-        }
-        default: {
-            throw new Error(`expectation violated: package '${depPath}' has more than one slash (/) in name`);
-        }
-    }
-}
-exports.parseNameAndNamespace = parseNameAndNamespace;
-function parsrePackage(depPath, version) {
-    const [namespace, name] = parseNameAndNamespace(depPath);
-    return new packageurl_js_1.PackageURL('elm', namespace, name, version, null, null);
-}
-exports.parsrePackage = parsrePackage;
-function parseDependencies(cache, dependencies) {
-    return Object.entries(dependencies).map(([depPath, version]) => {
-        return cache.package(parsrePackage(depPath, version));
-    });
-}
-exports.parseDependencies = parseDependencies;
-function createBuildTarget(elmJSONString, fallbackName) {
-    const maybeElmJSON = elmJSONSchema.safeParse(jsonSchema.parse(JSON.parse(elmJSONString)));
-    if (!maybeElmJSON.success) {
-        throw new Error(`given file is an invalid format of elm.json: ${maybeElmJSON.error.message}`);
-    }
-    const elmJSON = maybeElmJSON.data;
-    const cache = new dependency_submission_toolkit_1.PackageCache();
-    const topLevelDirectDependencies = parseDependencies(cache, elmJSON.dependencies.direct);
-    const topLevelIndirectDependencies = parseDependencies(cache, elmJSON.dependencies.indirect);
-    const testDirectDependencies = parseDependencies(cache, elmJSON['test-dependencies'].direct);
-    const testIndirectDependencies = parseDependencies(cache, elmJSON['test-dependencies'].indirect);
-    const buildTarget = new dependency_submission_toolkit_1.BuildTarget(elmJSON.name ?? fallbackName);
-    for (const pkg of topLevelDirectDependencies) {
-        buildTarget.addBuildDependency(pkg);
-    }
-    for (const pkg of topLevelIndirectDependencies) {
-        buildTarget.addIndirectDependency(pkg, 'runtime');
-    }
-    for (const pkg of testDirectDependencies) {
-        buildTarget.addDirectDependency(pkg, 'development');
-    }
-    for (const pkg of testIndirectDependencies) {
-        buildTarget.addIndirectDependency(pkg, 'development');
-    }
-    return buildTarget;
-}
-exports.createBuildTarget = createBuildTarget;
-function buildSnapshot(elmJsonPath, job, runId) {
-    const buildTarget = createBuildTarget((0, fs_1.readFileSync)(elmJsonPath).toString(), elmJsonPath);
-    const snapshot = new dependency_submission_toolkit_1.Snapshot({
-        name: 'kachick/elm-dependency-submission',
-        url: 'https://github.com/kachick/elm-dependency-submission',
-        version: '0.0.1',
-    }, github_1.context, {
-        correlator: `${job}: ${elmJsonPath}`,
-        id: runId,
-    });
-    snapshot.addManifest(buildTarget);
-    return snapshot;
-}
-exports.buildSnapshot = buildSnapshot;
-
-
-/***/ }),
-
-/***/ 5251:
-/***/ ((__unused_webpack_module, exports) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.assertIsDefined = void 0;
-// https://www.typescriptlang.org/docs/handbook/release-notes/typescript-3-7.html#assertion-functions
-function assertIsDefined(val) {
-    if (val === undefined || val === null) {
-        // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-        throw new Error(`Expected 'val' to be defined, but received ${val}`);
-    }
-}
-exports.assertIsDefined = assertIsDefined;
-
-
-/***/ }),
-
 /***/ 7351:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
@@ -24649,19 +24519,133 @@ var __webpack_exports__ = {};
 // This entry need to be wrapped in an IIFE because it need to be in strict mode.
 (() => {
 "use strict";
-var exports = __webpack_exports__;
 
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-const core_1 = __nccwpck_require__(2186);
-const github_1 = __nccwpck_require__(5438);
-const dependency_submission_toolkit_1 = __nccwpck_require__(9810);
-const path_1 = __nccwpck_require__(1017);
-const elm_package_detector_1 = __nccwpck_require__(5714);
+
+// src/main.ts
+var import_core = __nccwpck_require__(2186);
+var import_github2 = __nccwpck_require__(5438);
+var import_dependency_submission_toolkit2 = __nccwpck_require__(9810);
+var import_path = __nccwpck_require__(1017);
+
+// src/elm-package-detector.ts
+var import_fs = __nccwpck_require__(7147);
+var import_dependency_submission_toolkit = __nccwpck_require__(9810);
+var import_github = __nccwpck_require__(5438);
+var import_packageurl_js = __nccwpck_require__(8915);
+
+// src/typeguards.ts
+function assertIsDefined(val) {
+  if (val === void 0 || val === null) {
+    throw new Error(`Expected 'val' to be defined, but received ${val}`);
+  }
+}
+
+// src/elm-package-detector.ts
+var import_zod = __nccwpck_require__(3301);
+var literalSchema = import_zod.z.union([import_zod.z.string(), import_zod.z.number(), import_zod.z.boolean(), import_zod.z.null()]);
+var jsonSchema = import_zod.z.lazy(() => import_zod.z.union([literalSchema, import_zod.z.array(jsonSchema), import_zod.z.record(jsonSchema)]));
+var elmDependenciesSchema = import_zod.z.record(import_zod.z.string(), import_zod.z.string());
+var elmDependenciesSetSchema = import_zod.z.object({
+  direct: elmDependenciesSchema,
+  indirect: elmDependenciesSchema
+});
+var elmJSONSchema = import_zod.z.object({
+  type: import_zod.z.enum(["application", "package"]),
+  name: import_zod.z.optional(import_zod.z.string()),
+  license: import_zod.z.optional(import_zod.z.string()),
+  version: import_zod.z.optional(import_zod.z.string()),
+  "exposed-modules": import_zod.z.optional(import_zod.z.array(import_zod.z.string())),
+  "elm-version": import_zod.z.string(),
+  dependencies: elmDependenciesSetSchema,
+  "test-dependencies": elmDependenciesSetSchema
+});
+function parseNameAndNamespace(depPath) {
+  const namespaceAndName = depPath.split("/");
+  switch (namespaceAndName.length) {
+    case 1: {
+      const [name] = namespaceAndName;
+      assertIsDefined(name);
+      return ["", name];
+    }
+    case 2: {
+      const [namespace, name] = namespaceAndName;
+      assertIsDefined(namespace);
+      assertIsDefined(name);
+      return [
+        namespace,
+        name
+      ];
+    }
+    default: {
+      throw new Error(
+        `expectation violated: package '${depPath}' has more than one slash (/) in name`
+      );
+    }
+  }
+}
+function parsrePackage(depPath, version) {
+  const [namespace, name] = parseNameAndNamespace(depPath);
+  return new import_packageurl_js.PackageURL("elm", namespace, name, version, null, null);
+}
+function parseDependencies(cache, dependencies) {
+  return Object.entries(dependencies).map(([depPath, version]) => {
+    return cache.package(parsrePackage(depPath, version));
+  });
+}
+function createBuildTarget(elmJSONString, fallbackName) {
+  const maybeElmJSON = elmJSONSchema.safeParse(jsonSchema.parse(JSON.parse(elmJSONString)));
+  if (!maybeElmJSON.success) {
+    throw new Error(`given file is an invalid format of elm.json: ${maybeElmJSON.error.message}`);
+  }
+  const elmJSON = maybeElmJSON.data;
+  const cache = new import_dependency_submission_toolkit.PackageCache();
+  const topLevelDirectDependencies = parseDependencies(cache, elmJSON.dependencies.direct);
+  const topLevelIndirectDependencies = parseDependencies(cache, elmJSON.dependencies.indirect);
+  const testDirectDependencies = parseDependencies(cache, elmJSON["test-dependencies"].direct);
+  const testIndirectDependencies = parseDependencies(cache, elmJSON["test-dependencies"].indirect);
+  const buildTarget = new import_dependency_submission_toolkit.BuildTarget(elmJSON.name ?? fallbackName);
+  for (const pkg of topLevelDirectDependencies) {
+    buildTarget.addBuildDependency(pkg);
+  }
+  for (const pkg of topLevelIndirectDependencies) {
+    buildTarget.addIndirectDependency(pkg, "runtime");
+  }
+  for (const pkg of testDirectDependencies) {
+    buildTarget.addDirectDependency(pkg, "development");
+  }
+  for (const pkg of testIndirectDependencies) {
+    buildTarget.addIndirectDependency(pkg, "development");
+  }
+  return buildTarget;
+}
+function buildSnapshot(elmJsonPath, job, runId) {
+  const buildTarget = createBuildTarget((0, import_fs.readFileSync)(elmJsonPath).toString(), elmJsonPath);
+  const snapshot = new import_dependency_submission_toolkit.Snapshot(
+    {
+      name: "kachick/elm-dependency-submission",
+      url: "https://github.com/kachick/elm-dependency-submission",
+      version: "0.0.1"
+    },
+    import_github.context,
+    {
+      correlator: `${job}: ${elmJsonPath}`,
+      id: runId
+    }
+  );
+  snapshot.addManifest(buildTarget);
+  return snapshot;
+}
+
+// src/main.ts
 async function run() {
-    (0, core_1.startGroup)('Setup variables');
-    const snapshot = (0, elm_package_detector_1.buildSnapshot)((0, path_1.normalize)((0, core_1.getInput)('elm-json-path', { required: true, trimWhitespace: true })), github_1.context.job, github_1.context.runId.toString());
-    await (0, dependency_submission_toolkit_1.submitSnapshot)(snapshot);
-    (0, core_1.endGroup)();
+  (0, import_core.startGroup)("Setup variables");
+  const snapshot = buildSnapshot(
+    (0, import_path.normalize)((0, import_core.getInput)("elm-json-path", { required: true, trimWhitespace: true })),
+    import_github2.context.job,
+    import_github2.context.runId.toString()
+  );
+  await (0, import_dependency_submission_toolkit2.submitSnapshot)(snapshot);
+  (0, import_core.endGroup)();
 }
 void run();
 
