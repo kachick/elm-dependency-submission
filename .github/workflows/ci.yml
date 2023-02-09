@@ -19,6 +19,10 @@ on:
       - '.vscode/**'
 jobs:
   test:
+    # To update git diff
+    permissions:
+      pull-requests: write
+      contents: write
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
