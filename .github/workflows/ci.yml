@@ -25,6 +25,8 @@ jobs:
         with:
           submodules: true # Fetch example project
           fetch-depth: 0 # Fetch all history for .GitInfo and .Lastmod
+          # https://yoshiori.hatenablog.com/entry/2021/12/08/220839
+          ref: ${{ github.event.pull_request.head.ref }}
       - uses: actions/setup-node@v3
         with:
           node-version: 16
