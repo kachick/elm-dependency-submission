@@ -31,7 +31,7 @@
     "esbuild-jest-transform": "^1.1.1",
     "packageurl-js": "^1.0.0",
     "tsx": "^3.12.3",
-    "zod": "^3.20.3"
+    "zod": "^3.20.5"
   },
   "devDependencies": {
     "@tsconfig/node16-strictest-esm": "^1.0.3",
