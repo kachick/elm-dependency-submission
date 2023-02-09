@@ -24583,13 +24583,13 @@ function parseNameAndNamespace(depPath) {
     }
   }
 }
-function parsrePackage(depPath, version) {
+function parsePackage(depPath, version) {
   const [namespace, name] = parseNameAndNamespace(depPath);
   return new import_packageurl_js.PackageURL("elm", namespace, name, version, null, null);
 }
 function parseDependencies(cache, dependencies) {
   return Object.entries(dependencies).map(([depPath, version]) => {
-    return cache.package(parsrePackage(depPath, version));
+    return cache.package(parsePackage(depPath, version));
   });
 }
 function createBuildTarget(elmJSONString, fallbackName) {

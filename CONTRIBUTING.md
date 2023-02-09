@@ -45,8 +45,8 @@ false
 undefined
 
 > // Utils can be loaded
-> const { parsrePackage } = await import('./src/elm-package-detector.ts');
-> parsrePackage('elm-explorations/test', '2.1.0')
+> const { parsePackage } = await import('./src/elm-package-detector.ts');
+> parsePackage('elm-explorations/test', '2.1.0')
 PackageURL {
   type: 'elm',
   name: 'test',
