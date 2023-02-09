@@ -7,15 +7,14 @@
     "node": "16.x"
   },
   "scripts": {
-    "prebuild": "rimraf lib",
-    "build": "tsc --project tsconfig.build.json",
-    "format:fix": "dprint fmt",
-    "format:check": "dprint check",
-    "lint": "eslint src/**/*.ts",
-    "prepackage": "rimraf dist",
-    "package": "ncc build",
+    "lint:fix": "eslint --fix src/**/*.ts *.ts",
+    "lint:check": "eslint src/**/*.ts *.ts",
+    "prepackage": "tsx scripts/rmrf.ts lib dist",
+    "package": "esbuild src/main.ts --bundle --platform=node --target=node16 --packages=external --outfile=lib/main.js && ncc build",
+    "postpackage": "tsx scripts/rmrf.ts lib",
     "test": "jest",
-    "all": "npm run format:check && npm run lint && npm run build && npm run package && npm test"
+    "typecheck": "tsc",
+    "repl": "tsx"
   },
   "repository": {
     "type": "git",
@@ -28,7 +27,10 @@
     "@actions/core": "^1.10.0",
     "@actions/github": "^5.1.1",
     "@github/dependency-submission-toolkit": "^1.2.8",
+    "esbuild": "^0.17.6",
+    "esbuild-jest-transform": "^1.1.1",
     "packageurl-js": "^1.0.0",
+    "tsx": "^3.12.3",
     "zod": "^3.20.3"
   },
   "devDependencies": {
@@ -37,14 +39,11 @@
     "@typescript-eslint/eslint-plugin": "^5.51.0",
     "@typescript-eslint/parser": "^5.51.0",
     "@vercel/ncc": "^0.36.1",
-    "dprint": "^0.34.4",
     "eslint": "^8.33.0",
     "eslint-plugin-deprecation": "^1.3.3",
     "eslint-plugin-import": "^2.27.5",
     "eslint-plugin-jest": "^27.2.1",
     "jest": "^28.1.3",
-    "rimraf": "^4.1.2",
-    "ts-jest": "^28.0.8",
     "ts-node": "^10.9.1",
     "typescript": "^4.9.5"
   }
