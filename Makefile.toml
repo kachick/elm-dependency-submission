@@ -1,6 +1,14 @@
 [config]
 skip_core_tasks = true
 
+[tasks.setup]
+category = "Tools"
+description = "Run formatters without changes"
+script = [
+  "git submodule update --init --recursive",
+  "npm install",
+]
+
 [tasks.format-check]
 category = "Tools"
 description = "Run formatters without changes"
