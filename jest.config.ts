@@ -17,4 +17,4 @@ const config: Config.InitialOptions = {
   extensionsToTreatAsEsm: ['.ts'],
   testMatch: ['**/**/*.test.ts'],
 };
-export default config;
+module.exports = config;

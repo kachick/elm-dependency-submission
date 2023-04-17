@@ -1,5 +1,5 @@
 import { readFileSync } from 'fs';
-import { BuildTarget, Package, PackageCache, Snapshot } from '@github/dependency-submission-toolkit';
+import { BuildTarget, type Package, PackageCache, Snapshot } from '@github/dependency-submission-toolkit';
 import { context } from '@actions/github';
 import { PackageURL } from 'packageurl-js';
 import { assertIsDefined } from './typeguards';
