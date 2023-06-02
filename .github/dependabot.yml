@@ -11,3 +11,7 @@ updates:
     ignore:
       - dependency-name: '@types/*'
         update-types: ['version-update:semver-major']
+    groups:
+      eslint-dependencies:
+        patterns:
+          - '*eslint*'
