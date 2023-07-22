@@ -9,7 +9,7 @@ inputs:
     description: 'Basically GITHUB_TOKEN is enough.'
     required: true
   elm-json-path:
-    description: 'Targetting `elm.json` path. Not elm=tooling.json'
+    description: 'Targeting `elm.json` path. Not elm=tooling.json'
     required: false
     default: 'elm.json'
 runs:
