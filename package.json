@@ -29,7 +29,7 @@
     "zod": "^3.22.3"
   },
   "devDependencies": {
-    "@types/node": "^16.18.55",
+    "@types/node": "^16.18.57",
     "@vercel/ncc": "^0.38.0",
     "esbuild": "^0.17.19",
     "esbuild-jest-transform": "^1.1.1",
