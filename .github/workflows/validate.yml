@@ -7,7 +7,6 @@ on:
       - 'LICENSE'
       - '.editorconfig'
       - 'dprint.json'
-      - '.eslintrc.js'
       - 'README.md'
       - '.vscode/**'
   pull_request:
@@ -16,7 +15,6 @@ on:
       - 'LICENSE'
       - '.editorconfig'
       - 'dprint.json'
-      - '.eslintrc.js'
       - 'README.md'
       - '.vscode/**'
 

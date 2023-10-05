@@ -15,7 +15,6 @@ test('builds snapshot for valid elm.json', () => {
   expect(job).toEqual({ 'correlator': 'awesome detect: emobu/elm.json', 'id': '42' });
   expect(version).toEqual(0);
   expect(scanned).toEqual(expect.stringMatching('\\d{4}-\\d{2}-\\d{2}T\\S+'));
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
   expect(JSON.parse(JSON.stringify(manifests['emobu/elm.json'])).resolved).toEqual({
     'pkg:elm/elm-community/list-extra@8.7.0': {
       'dependencies': [],

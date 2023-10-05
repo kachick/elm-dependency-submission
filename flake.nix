@@ -32,6 +32,7 @@
               bashInteractive
 
               nodejs_16
+              deno
               dprint
               cargo-make
               nil
