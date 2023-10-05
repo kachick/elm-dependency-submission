@@ -15,28 +15,11 @@ script = [
   "git submodule update --init --recursive",
 ]
 
-[tasks.format-check]
-category = "Tools"
-description = "Run formatters without changes"
-script = [
-  "dprint check",
-]
-
-[tasks.format-apply]
+[tasks.fmt]
 category = "Tools"
 description = "Run formatters with changes"
 script = [
   "dprint fmt",
-]
-
-[tasks.fmt]
-alias = "format-apply"
-
-[tasks.typos-check]
-category = "Tools"
-description = "Run typo checker without changes"
-script = [
-  "typos . .github .vscode",
 ]
 
 [tasks.lint]
@@ -49,7 +32,7 @@ script = [
   "actionlint",
 ]
 
-[tasks.test-ts]
+[tasks.test]
 category = "Tools"
 description = 'Test typescripts'
 script = [
@@ -63,17 +46,17 @@ script = [
   "npm run typecheck",
 ]
 
-[tasks.package]
+[tasks.build]
 category = "Tools"
-description = 'Correctness in TypeScript'
+description = 'Build'
 script = [
-  "npm run package",
+  "npm run build",
 ]
 
 [tasks.check]
 category = "Tools"
 description = 'Parallel runner for all tests and linters'
-run_task = { name = ["typos-check", "test-ts", "typecheck", "lint"], parallel = true }
+run_task = { name = ["test", "typecheck", "lint", "build"], parallel = true }
 
 [tasks.all]
 category = "Tools"

@@ -16,43 +16,44 @@ on:
       - 'README.md'
       - '.vscode/**'
 jobs:
-  test:
-    # To update git diff
-    permissions:
-      pull-requests: write
-      contents: write
+  build:
+    timeout-minutes: 15
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608 # v4.1.0
+      - uses: actions/setup-node@5e21ff4d9bc1a8cf6de233a3057d20ec6b3fb69d # v3.8.1
         with:
-          submodules: true # Fetch example project
-          fetch-depth: 0 # Fetch all history for .GitInfo and .Lastmod
-          # https://yoshiori.hatenablog.com/entry/2021/12/08/220839
-          ref: ${{ github.event.pull_request.head.ref }}
-      - uses: actions/setup-node@v3
-        with:
-          node-version: 20
+          node-version: '20.8.0' # selfup { "regex": "\\d[^']+", "script": "node --version | tr -d v" }
           cache: npm
-      - name: Install dependencies
-        run: npm ci --ignore-scripts
-      - name: Test (Need to build before test)
-        run: npm test
-      - name: Ensure we can make package
-        run: npm run package
-      # dependabot E-mail address: https://github.com/orgs/community/discussions/26560
-      - name: Update build files
-        run: |
-          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git config user.name 'github-actions[bot]'
-          git add dist
-          if ! git diff --exit-code --quiet
-          then
-            git commit -m 'Update build files'
-            git push
-          fi
-        if: ${{ github.actor == 'dependabot[bot]' || github.actor == 'renovate[bot]' }}
-      - name: Prevent missing commits after compile
+      - run: npm ci --ignore-scripts
+      - run: npm run build
+      - name: Check no diff for products
         run: git add --intent-to-add . && git diff --exit-code
+
+  test:
+    timeout-minutes: 15
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608 # v4.1.0
+      - uses: actions/setup-node@5e21ff4d9bc1a8cf6de233a3057d20ec6b3fb69d # v3.8.1
+        with:
+          node-version: '20.8.0' # selfup { "regex": "\\d[^']+", "script": "node --version | tr -d v" }
+          cache: npm
+      - run: npm ci --ignore-scripts
+      - run: npm test
+
+  typecheck:
+    timeout-minutes: 15
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608 # v4.1.0
+      - uses: actions/setup-node@5e21ff4d9bc1a8cf6de233a3057d20ec6b3fb69d # v3.8.1
+        with:
+          node-version: '20.8.0' # selfup { "regex": "\\d[^']+", "script": "node --version | tr -d v" }
+          cache: npm
+      - run: npm ci --ignore-scripts
+      - name: Typecheck
+        run: npm run typecheck
 
   lint:
     timeout-minutes: 15

@@ -18341,8 +18341,632 @@ Support boolean input list: \`true | True | TRUE | false | False | FALSE\``);
   }
 });
 
-// node_modules/packageurl-js/src/package-url.js
+// node_modules/@github/dependency-submission-toolkit/dist/manifest.js
+var require_manifest = __commonJS({
+  "node_modules/@github/dependency-submission-toolkit/dist/manifest.js"(exports2) {
+    "use strict";
+    Object.defineProperty(exports2, "__esModule", { value: true });
+    exports2.BuildTarget = exports2.Manifest = void 0;
+    var Dependency = class {
+      /**
+       * constructor.
+       *
+       * @param {Package} depPackage
+       * @param {DependencyRelationship} relationship
+       * @param {DependencyScope} scope
+       */
+      constructor(depPackage, relationship, scope) {
+        this.depPackage = depPackage;
+        this.relationship = relationship;
+        this.scope = scope;
+      }
+      /**
+       * toJSON is a custom JSON-serializer. It will be called when JSON.stringify()
+       * is called with this class or any object containing this class.
+       *
+       * @returns {object} with keys package_url, relationship, scope, and
+       * dependency, per the Snapshot format
+       */
+      toJSON() {
+        return {
+          package_url: this.depPackage.packageURL.toString(),
+          relationship: this.relationship,
+          scope: this.scope,
+          dependencies: this.depPackage.packageDependencyIDs
+        };
+      }
+    };
+    var Manifest = class {
+      constructor(name, filePath) {
+        this.resolved = {};
+        this.name = name;
+        if (filePath) {
+          this.file = { source_location: filePath };
+        }
+      }
+      /**
+       * addIndirectDependency adds a package as an indirect dependency to the
+       * manifest. Direct dependencies take precedence over indirect dependencies
+       * if a package is added as both.
+       *
+       * @param {Package} pkg
+       * @param {DependencyScope} scope
+       */
+      addDirectDependency(pkg, scope) {
+        this.resolved[pkg.packageID()] = new Dependency(pkg, "direct", scope);
+      }
+      /**
+       * addIndirectDependency adds a package as an indirect dependency to the
+       * manifest. NOTE: if a dependency has been previously added as a direct
+       * dependency, no change will happen (direct dependencies take precedence).
+       *
+       * @param {Package} pkg
+       * @param {DependencyScope} scope dependency scope of the package
+       */
+      addIndirectDependency(pkg, scope) {
+        var _a;
+        var _b, _c;
+        (_a = (_b = this.resolved)[_c = pkg.packageID()]) !== null && _a !== void 0 ? _a : _b[_c] = new Dependency(pkg, "indirect", scope);
+      }
+      hasDependency(pkg) {
+        return this.lookupDependency(pkg) !== void 0;
+      }
+      lookupDependency(pkg) {
+        return this.resolved[pkg.packageID()];
+      }
+      countDependencies() {
+        return Object.keys(this.resolved).length;
+      }
+      /**
+       * filterDependencies. Given a predicate function (a function returning a
+       * boolean for an input), return the packages that match the dependency
+       * relationship. Used for getting filtered lists of direct/indirect packages,
+       * runtime/development packages, etc.
+       *
+       * @param {Function} predicate
+       * @returns {Array<Package>}
+       */
+      filterDependencies(predicate) {
+        return Object.values(this.resolved).reduce((acc, dep) => {
+          if (predicate(dep)) {
+            acc.push(dep.depPackage);
+          }
+          return acc;
+        }, []);
+      }
+      /**
+       * directDependencies returns list of packages that are specified as direct dependencies
+       */
+      directDependencies() {
+        return this.filterDependencies((dep) => dep.relationship === "direct");
+      }
+      /**
+       * indirectDependencies returns list of packages that are specified as indirect dependencies
+       */
+      indirectDependencies() {
+        return this.filterDependencies((dep) => dep.relationship === "indirect");
+      }
+    };
+    exports2.Manifest = Manifest;
+    var BuildTarget2 = class extends Manifest {
+      /**
+       * addBuildDependency will add a package as a direct runtime dependency and all of
+       * the package's transitive dependencies as indirect dependencies
+       *
+       * @param {Package} pkg package used to build the build target
+       */
+      addBuildDependency(pkg) {
+        this.addDirectDependency(pkg, "runtime");
+        pkg.dependencies.forEach((transDep) => {
+          this.addIndirectDependency(transDep, "runtime");
+        });
+      }
+    };
+    exports2.BuildTarget = BuildTarget2;
+  }
+});
+
+// node_modules/@github/dependency-submission-toolkit/node_modules/packageurl-js/src/package-url.js
 var require_package_url = __commonJS({
+  "node_modules/@github/dependency-submission-toolkit/node_modules/packageurl-js/src/package-url.js"(exports2, module2) {
+    var PackageURL2 = class _PackageURL {
+      constructor(type, namespace, name, version2, qualifiers, subpath) {
+        let required = { "type": type, "name": name };
+        Object.keys(required).forEach((key) => {
+          if (!required[key]) {
+            throw new Error('Invalid purl: "' + key + '" is a required field.');
+          }
+        });
+        let strings = { "type": type, "namespace": namespace, "name": name, "versions": version2, "subpath": subpath };
+        Object.keys(strings).forEach((key) => {
+          if (strings[key] && typeof strings[key] === "string" || !strings[key]) {
+            return;
+          }
+          throw new Error('Invalid purl: "' + key + '" argument must be a string.');
+        });
+        if (qualifiers) {
+          if (typeof qualifiers !== "object") {
+            throw new Error('Invalid purl: "qualifiers" argument must be a dictionary.');
+          }
+          Object.keys(qualifiers).forEach((key) => {
+            if (!/^[a-z]+$/i.test(key) && !/[\.-_]/.test(key)) {
+              throw new Error('Invalid purl: qualifier "' + key + '" contains an illegal character.');
+            }
+          });
+        }
+        this.type = type;
+        this.name = name;
+        this.namespace = namespace;
+        this.version = version2;
+        this.qualifiers = qualifiers;
+        this.subpath = subpath;
+      }
+      _handlePyPi() {
+        this.name = this.name.toLowerCase().replace(/_/g, "-");
+      }
+      toString() {
+        var purl = ["pkg:", this.type, "/"];
+        if (this.type === "pypi") {
+          this._handlePyPi();
+        }
+        if (this.namespace) {
+          purl.push(
+            encodeURIComponent(this.namespace).replace("%3A", ":").replace("%2F", "/")
+          );
+          purl.push("/");
+        }
+        purl.push(encodeURIComponent(this.name).replace("%3A", ":"));
+        if (this.version) {
+          purl.push("@");
+          purl.push(encodeURIComponent(this.version).replace("%3A", ":"));
+        }
+        if (this.qualifiers) {
+          purl.push("?");
+          let qualifiers = this.qualifiers;
+          let qualifierString = [];
+          Object.keys(qualifiers).sort().forEach((key) => {
+            qualifierString.push(encodeURIComponent(key).replace("%3A", ":") + "=" + encodeURI(qualifiers[key]));
+          });
+          purl.push(qualifierString.join("&"));
+        }
+        if (this.subpath) {
+          purl.push("#");
+          purl.push(encodeURI(this.subpath));
+        }
+        return purl.join("");
+      }
+      static fromString(purl) {
+        if (!purl || false === "string" || !purl.trim()) {
+          throw new Error("A purl string argument is required.");
+        }
+        var [scheme, remainder] = purl.split(":");
+        if (scheme !== "pkg") {
+          throw new Error('purl is missing the required "pkg" scheme component.');
+        }
+        remainder = remainder.trim().replace(/^\/+/g, "");
+        let type = remainder.split("/")[0];
+        var remainder = remainder.split("/").slice(1).join("/");
+        if (!type || !remainder) {
+          throw new Error('purl is missing the required "type" component.');
+        }
+        let url = new URL(purl);
+        let qualifiers = null;
+        url.searchParams.forEach((value, key) => {
+          if (!qualifiers) {
+            qualifiers = {};
+          }
+          qualifiers[key] = value;
+        });
+        let subpath = url.hash;
+        if (subpath.indexOf("#") === 0) {
+          subpath = subpath.substring(1);
+        }
+        if (subpath.length === 0) {
+          subpath = null;
+        }
+        if (url.username !== "" || url.password !== "") {
+          throw new Error('Invalid purl: cannot contain a "user:pass@host:port"');
+        }
+        let path = url.pathname.trim().replace(/^\/+/g, "");
+        let version2 = null;
+        if (path.includes("@")) {
+          let index = path.indexOf("@");
+          version2 = decodeURIComponent(path.substring(index + 1));
+          remainder = path.substring(0, index);
+        } else {
+          remainder = path;
+        }
+        let remaining = remainder.split("/").slice(1);
+        let name = null;
+        let namespace = null;
+        if (remaining.length > 1) {
+          let nameIndex = remaining.length - 1;
+          let namespaceComponents = remaining.slice(0, nameIndex);
+          name = decodeURIComponent(remaining[nameIndex]);
+          namespace = decodeURIComponent(namespaceComponents.join("/"));
+        } else if (remaining.length === 1) {
+          name = decodeURIComponent(remaining[0]);
+        }
+        if (name === "") {
+          throw new Error('purl is missing the required "name" component.');
+        }
+        return new _PackageURL(type, namespace, name, version2, qualifiers, subpath);
+      }
+    };
+    module2.exports = PackageURL2;
+  }
+});
+
+// node_modules/@github/dependency-submission-toolkit/node_modules/packageurl-js/index.js
+var require_packageurl_js = __commonJS({
+  "node_modules/@github/dependency-submission-toolkit/node_modules/packageurl-js/index.js"(exports2, module2) {
+    var PackageURL2 = require_package_url();
+    module2.exports = {
+      PackageURL: PackageURL2
+    };
+  }
+});
+
+// node_modules/@github/dependency-submission-toolkit/dist/package.js
+var require_package = __commonJS({
+  "node_modules/@github/dependency-submission-toolkit/dist/package.js"(exports2) {
+    "use strict";
+    Object.defineProperty(exports2, "__esModule", { value: true });
+    exports2.Package = void 0;
+    var packageurl_js_1 = require_packageurl_js();
+    var Package = class {
+      /**
+       * A Package can be constructed with a PackageURL or a string conforming to
+       * the Package URL format (https://github.com/package-url/purl-spec)
+       *
+       * @param {PackageURL | string} pkg
+       */
+      constructor(pkg) {
+        if (typeof pkg === "string") {
+          this.packageURL = packageurl_js_1.PackageURL.fromString(pkg);
+        } else {
+          this.packageURL = pkg;
+        }
+        this.dependencies = [];
+      }
+      /**
+       * Associate a package child dependency with this package
+       *
+       * @param {Package} pkg
+       * @returns {Package}
+       */
+      dependsOn(pkg) {
+        this.dependencies.push(pkg);
+        return this;
+      }
+      /**
+       * Add multiple packages as dependencies.
+       *
+       * @param {Array} pkgs
+       * @returns {Package}
+       */
+      dependsOnPackages(pkgs) {
+        pkgs.forEach((pkg) => this.dependsOn(pkg));
+        return this;
+      }
+      /**
+       * packageDependencyIDs provides the list of package IDs of package dependencies
+       */
+      get packageDependencyIDs() {
+        return this.dependencies.map((dep) => dep.packageID());
+      }
+      /**
+       * packageID generates the unique package ID (currently, the Package URL)
+       *
+       * @returns {string}
+       */
+      packageID() {
+        return this.packageURL.toString();
+      }
+      /**
+       * namespace of the package
+       *
+       * @returns {string}
+       */
+      namespace() {
+        var _a;
+        return (_a = this.packageURL.namespace) !== null && _a !== void 0 ? _a : null;
+      }
+      /**
+       * name of the package
+       *
+       * @returns {string}
+       */
+      name() {
+        return this.packageURL.name;
+      }
+      /**
+       * version of the package
+       *
+       * @returns {string}
+       */
+      version() {
+        return this.packageURL.version || "";
+      }
+      /**
+       * Provided a "matcher" object with any of the string fields 'namespace',
+       * 'name', or 'version', returns true if the Package has values matching the
+       * matcher.
+       *
+       * @param {Object} matcher
+       * @returns {boolean}
+       */
+      matching(matcher) {
+        return (matcher.namespace === void 0 || this.packageURL.namespace === matcher.namespace) && (matcher.name === void 0 || this.packageURL.name === matcher.name) && (matcher.version === void 0 || this.packageURL.version === matcher.version);
+      }
+    };
+    exports2.Package = Package;
+  }
+});
+
+// node_modules/@github/dependency-submission-toolkit/dist/package-cache.js
+var require_package_cache = __commonJS({
+  "node_modules/@github/dependency-submission-toolkit/dist/package-cache.js"(exports2) {
+    "use strict";
+    Object.defineProperty(exports2, "__esModule", { value: true });
+    exports2.PackageCache = void 0;
+    var packageurl_js_1 = require_packageurl_js();
+    var package_1 = require_package();
+    var PackageCache2 = class {
+      constructor() {
+        this.database = {};
+      }
+      /**
+       * 'cache.package()' will be the most commonly used method of PackageCache.
+       * package(identifier) will create and add a new Package to the PackageCache if no
+       * Packaging with a matching identifier exists in PackageCache, or return an existing
+       * Package if a match is found. The mutation in this case is expected; do not
+       * use package(identifier) to determine if a package is already added.
+       * Instead, use hasPackage or lookupPackage.
+       *
+       *
+       * @param {PackageURL | string} identifier PackageURL or string matching the Package URL format (https://github.com/package-url/purl-spec)
+       * @returns {Package}
+       */
+      package(identifier) {
+        const existingDep = this.lookupPackage(identifier);
+        if (existingDep) {
+          return existingDep;
+        }
+        const dep = new package_1.Package(identifier);
+        this.addPackage(dep);
+        return dep;
+      }
+      /**
+       * Provided a "matcher" object with any of the string fields 'namespace',
+       * 'name', or 'version', returns all packages matching fields specified by
+       * the matcher stored by the PackageCache
+       *
+       * @param {Object} matcher
+       * @returns {boolean}
+       */
+      packagesMatching(matcher) {
+        return Object.values(this.database).filter((pkg) => pkg.matching(matcher));
+      }
+      /**
+       * addPackage adds a package, even if it already exists in the cache.
+       *
+       * @param {Package} pkg
+       */
+      addPackage(pkg) {
+        this.database[pkg.packageURL.toString()] = pkg;
+      }
+      /**
+       * removePackage a removes a package from the cache
+       *
+       * @param {Package} pkg
+       */
+      removePackage(pkg) {
+        delete this.database[pkg.packageURL.toString()];
+      }
+      /**
+       * lookupPackage looks up and returns a package with a matching identifier,
+       * if one exists.
+       *
+       * @param {PackageURL | string} identifier
+       * @returns {Package | undefined}
+       */
+      lookupPackage(identifier) {
+        if (typeof identifier === "string") {
+          const purl = packageurl_js_1.PackageURL.fromString(identifier);
+          return this.database[purl.toString()];
+        } else {
+          return this.database[identifier.toString()];
+        }
+      }
+      /**
+       * hasPackage returns true if a package with a matching identifier exists.
+       *
+       * @param {PackageURL | string} identifier
+       * @returns {boolean}
+       */
+      hasPackage(identifier) {
+        return this.lookupPackage(identifier) !== void 0;
+      }
+      /**
+       * countPackages returns the total number of packages tracked in the cache
+       *
+       * @returns {number}
+       */
+      countPackages() {
+        return Object.values(this.database).length;
+      }
+    };
+    exports2.PackageCache = PackageCache2;
+  }
+});
+
+// node_modules/@github/dependency-submission-toolkit/dist/snapshot.js
+var require_snapshot = __commonJS({
+  "node_modules/@github/dependency-submission-toolkit/dist/snapshot.js"(exports2) {
+    "use strict";
+    var __createBinding = exports2 && exports2.__createBinding || (Object.create ? function(o, m, k, k2) {
+      if (k2 === void 0)
+        k2 = k;
+      var desc = Object.getOwnPropertyDescriptor(m, k);
+      if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+        desc = { enumerable: true, get: function() {
+          return m[k];
+        } };
+      }
+      Object.defineProperty(o, k2, desc);
+    } : function(o, m, k, k2) {
+      if (k2 === void 0)
+        k2 = k;
+      o[k2] = m[k];
+    });
+    var __setModuleDefault = exports2 && exports2.__setModuleDefault || (Object.create ? function(o, v) {
+      Object.defineProperty(o, "default", { enumerable: true, value: v });
+    } : function(o, v) {
+      o["default"] = v;
+    });
+    var __importStar = exports2 && exports2.__importStar || function(mod) {
+      if (mod && mod.__esModule)
+        return mod;
+      var result = {};
+      if (mod != null) {
+        for (var k in mod)
+          if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k))
+            __createBinding(result, mod, k);
+      }
+      __setModuleDefault(result, mod);
+      return result;
+    };
+    var __awaiter = exports2 && exports2.__awaiter || function(thisArg, _arguments, P, generator) {
+      function adopt(value) {
+        return value instanceof P ? value : new P(function(resolve) {
+          resolve(value);
+        });
+      }
+      return new (P || (P = Promise))(function(resolve, reject) {
+        function fulfilled(value) {
+          try {
+            step(generator.next(value));
+          } catch (e) {
+            reject(e);
+          }
+        }
+        function rejected(value) {
+          try {
+            step(generator["throw"](value));
+          } catch (e) {
+            reject(e);
+          }
+        }
+        function step(result) {
+          result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected);
+        }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+      });
+    };
+    Object.defineProperty(exports2, "__esModule", { value: true });
+    exports2.submitSnapshot = exports2.Snapshot = exports2.shaFromContext = exports2.jobFromContext = void 0;
+    var core = __importStar(require_core());
+    var github = __importStar(require_github());
+    var request_error_1 = require_dist_node4();
+    function jobFromContext(context3) {
+      return {
+        correlator: context3.job,
+        id: context3.runId.toString()
+      };
+    }
+    exports2.jobFromContext = jobFromContext;
+    function shaFromContext(context3) {
+      const pullRequestEvents = [
+        "pull_request",
+        "pull_request_comment",
+        "pull_request_review",
+        "pull_request_review_comment"
+        // Note that pull_request_target is omitted here.
+        // That event runs in the context of the base commit of the PR,
+        // so the snapshot should not be associated with the head commit.
+      ];
+      if (pullRequestEvents.includes(context3.eventName)) {
+        const pr = context3.payload.pull_request;
+        return pr.head.sha;
+      } else {
+        return context3.sha;
+      }
+    }
+    exports2.shaFromContext = shaFromContext;
+    var Snapshot2 = class {
+      /**
+       * All constructor parameters of a Snapshot are optional, but can be specified for specific overrides
+       *
+       * @param {Detector} detector
+       * @param {Context} context
+       * @param {Job} job
+       * @param {Date} date
+       * @param {number} version
+       */
+      constructor(detector, context3 = github.context, job, date = /* @__PURE__ */ new Date(), version2 = 0) {
+        this.detector = detector;
+        this.version = version2;
+        this.job = job || jobFromContext(context3);
+        this.sha = shaFromContext(context3);
+        this.ref = context3.ref;
+        this.scanned = date.toISOString();
+        this.manifests = {};
+      }
+      /**
+       * addManifest adds a manifest to the snapshot. At least one manifest must be added.
+       *
+       * @param {Manifest} manifest
+       */
+      addManifest(manifest) {
+        this.manifests[manifest.name] = manifest;
+      }
+      /**
+       * prettyJSON formats an intended version of the Snapshot (useful for debugging)
+       *
+       * @returns {string}
+       */
+      prettyJSON() {
+        return JSON.stringify(this, void 0, 4);
+      }
+    };
+    exports2.Snapshot = Snapshot2;
+    function submitSnapshot2(snapshot, context3 = github.context) {
+      return __awaiter(this, void 0, void 0, function* () {
+        core.setOutput("snapshot", JSON.stringify(snapshot));
+        core.notice("Submitting snapshot...");
+        core.notice(snapshot.prettyJSON());
+        const repo = context3.repo;
+        const githubToken = core.getInput("token") || (yield core.getIDToken());
+        const octokit = github.getOctokit(githubToken);
+        try {
+          const response = yield octokit.request("POST /repos/{owner}/{repo}/dependency-graph/snapshots", Object.assign({ headers: {
+            accept: "application/vnd.github.foo-bar-preview+json"
+          }, owner: repo.owner, repo: repo.repo }, snapshot));
+          core.notice("Snapshot successfully created at " + response.data.created_at.toString());
+        } catch (error) {
+          if (error instanceof request_error_1.RequestError) {
+            core.error(`HTTP Status ${error.status} for request ${error.request.method} ${error.request.url}`);
+            if (error.response) {
+              core.error(`Response body:
+${JSON.stringify(error.response.data, void 0, 2)}`);
+            }
+          }
+          if (error instanceof Error) {
+            core.error(error.message);
+            if (error.stack)
+              core.error(error.stack);
+          }
+          throw new Error(`Failed to submit snapshot: ${error}`);
+        }
+      });
+    }
+    exports2.submitSnapshot = submitSnapshot2;
+  }
+});
+
+// node_modules/packageurl-js/src/package-url.js
+var require_package_url2 = __commonJS({
   "node_modules/packageurl-js/src/package-url.js"(exports2, module2) {
     var KnownQualifierNames = Object.freeze({
       // known qualifiers as defined here:
@@ -18491,9 +19115,9 @@ var require_package_url = __commonJS({
 });
 
 // node_modules/packageurl-js/index.js
-var require_packageurl_js = __commonJS({
+var require_packageurl_js2 = __commonJS({
   "node_modules/packageurl-js/index.js"(exports2, module2) {
-    var PackageURL2 = require_package_url();
+    var PackageURL2 = require_package_url2();
     module2.exports = {
       PackageURL: PackageURL2
     };
@@ -18503,13 +19127,15 @@ var require_packageurl_js = __commonJS({
 // src/main.ts
 var import_core = __toESM(require_core(), 1);
 var import_github2 = __toESM(require_github(), 1);
-var import_dependency_submission_toolkit2 = __toESM(require_dist(), 1);
+var import_dependency_submission_toolkit = __toESM(require_dist(), 1);
 import { normalize } from "path";
 
 // src/elm-package-detector.ts
-var import_dependency_submission_toolkit = __toESM(require_dist(), 1);
+var import_manifest = __toESM(require_manifest(), 1);
+var import_package_cache = __toESM(require_package_cache(), 1);
+var import_snapshot = __toESM(require_snapshot(), 1);
 var import_github = __toESM(require_github(), 1);
-var import_packageurl_js = __toESM(require_packageurl_js(), 1);
+var import_packageurl_js = __toESM(require_packageurl_js2(), 1);
 import { readFileSync } from "fs";
 
 // src/typeguards.ts
@@ -22309,12 +22935,12 @@ function createBuildTarget(elmJSONString, fallbackName) {
     throw new Error(`given file is an invalid format of elm.json: ${maybeElmJSON.error.message}`);
   }
   const elmJSON = maybeElmJSON.data;
-  const cache = new import_dependency_submission_toolkit.PackageCache();
+  const cache = new import_package_cache.PackageCache();
   const topLevelDirectDependencies = parseDependencies(cache, elmJSON.dependencies.direct);
   const topLevelIndirectDependencies = parseDependencies(cache, elmJSON.dependencies.indirect);
   const testDirectDependencies = parseDependencies(cache, elmJSON["test-dependencies"].direct);
   const testIndirectDependencies = parseDependencies(cache, elmJSON["test-dependencies"].indirect);
-  const buildTarget = new import_dependency_submission_toolkit.BuildTarget(elmJSON.name ?? fallbackName);
+  const buildTarget = new import_manifest.BuildTarget(elmJSON.name ?? fallbackName);
   for (const pkg of topLevelDirectDependencies) {
     buildTarget.addBuildDependency(pkg);
   }
@@ -22331,7 +22957,7 @@ function createBuildTarget(elmJSONString, fallbackName) {
 }
 function buildSnapshot(elmJsonPath, job, runId) {
   const buildTarget = createBuildTarget(readFileSync(elmJsonPath).toString(), elmJsonPath);
-  const snapshot = new import_dependency_submission_toolkit.Snapshot(
+  const snapshot = new import_snapshot.Snapshot(
     {
       name: "kachick/elm-dependency-submission",
       url: "https://github.com/kachick/elm-dependency-submission",
@@ -22355,7 +22981,7 @@ async function run() {
     import_github2.context.job,
     import_github2.context.runId.toString()
   );
-  await (0, import_dependency_submission_toolkit2.submitSnapshot)(snapshot);
+  await (0, import_dependency_submission_toolkit.submitSnapshot)(snapshot);
   (0, import_core.endGroup)();
 }
 void run();
