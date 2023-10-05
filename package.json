@@ -26,7 +26,7 @@
     "@actions/github": "^5.1.1",
     "@github/dependency-submission-toolkit": "^1.2.10",
     "packageurl-js": "^1.1.1",
-    "zod": "^3.22.3"
+    "zod": "^3.22.4"
   },
   "devDependencies": {
     "@types/node": "^16.18.55",
