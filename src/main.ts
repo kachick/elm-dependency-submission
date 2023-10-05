@@ -3,7 +3,7 @@ import { context } from '@actions/github';
 import { submitSnapshot } from '@github/dependency-submission-toolkit';
 import { normalize } from 'path';
 
-import { buildSnapshot } from './elm-package-detector';
+import { buildSnapshot } from './elm-package-detector.ts';
 
 async function run(): Promise<void> {
   startGroup('Setup variables');

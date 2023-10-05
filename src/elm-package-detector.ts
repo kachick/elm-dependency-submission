@@ -1,5 +1,9 @@
 import { readFileSync } from 'fs';
-import { BuildTarget, type Package, PackageCache, Snapshot } from '@github/dependency-submission-toolkit';
+import { BuildTarget } from '@github/dependency-submission-toolkit/dist/manifest.js';
+import { PackageCache } from '@github/dependency-submission-toolkit/dist/package-cache.js';
+import { Snapshot } from '@github/dependency-submission-toolkit/dist/snapshot.js';
+import type { Package } from '@github/dependency-submission-toolkit';
+
 import { context } from '@actions/github';
 import { PackageURL } from 'packageurl-js';
 import { assertIsDefined } from './typeguards.ts';
