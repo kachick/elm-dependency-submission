@@ -32,5 +32,4 @@ jobs:
           fetch-depth: 0 # Fetch all history for .GitInfo and .Lastmod
       - uses: ./
         with:
-          token: '${{ secrets.GITHUB_TOKEN }}'
           elm-json-path: emobu/elm.json

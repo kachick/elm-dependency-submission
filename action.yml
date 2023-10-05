@@ -6,8 +6,9 @@ branding:
   color: 'blue'
 inputs:
   token:
-    description: 'Basically GITHUB_TOKEN is enough.'
+    description: 'The GITHUB_TOKEN secret'
     required: true
+    default: ${{ github.token }}
   elm-json-path:
     description: 'Targeting `elm.json` path. Not elm=tooling.json'
     required: false
