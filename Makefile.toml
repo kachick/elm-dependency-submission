@@ -110,7 +110,6 @@ script = [
   "actionlint --version",
 ]
 
-
 [tasks.check_no_git_diff]
 category = "Tools"
 description = 'This prevents unexpected commit'
