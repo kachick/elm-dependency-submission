@@ -43,6 +43,7 @@ script = [
 category = "Tools"
 description = "Run linters with changes"
 dependencies = [
+  # TODO: Remove since dropped eslint
   # Do not run parallel, because of dprint is superfast and eslint is slow. So sequential makes useful here.
   "format-apply",
 ]
@@ -54,6 +55,7 @@ script = [
 category = "Tools"
 description = "Run linters without changes"
 dependencies = [
+  # TODO: Remove since dropped eslint
   # Do not run parallel, because of dprint is superfast and eslint is slow. So sequential makes useful here.
   "format-check",
 ]
