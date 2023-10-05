@@ -2,7 +2,7 @@ import { readFileSync } from 'fs';
 import { BuildTarget, type Package, PackageCache, Snapshot } from '@github/dependency-submission-toolkit';
 import { context } from '@actions/github';
 import { PackageURL } from 'packageurl-js';
-import { assertIsDefined } from './typeguards';
+import { assertIsDefined } from './typeguards.ts';
 import { z } from 'zod';
 
 // https://github.com/colinhacks/zod/tree/20a45a20a344c48fc8cd1b630adcb822d439e70d#json-type

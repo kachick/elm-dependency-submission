@@ -1,5 +1,6 @@
-import { expect, test } from '@jest/globals';
-import { buildSnapshot, createBuildTarget, parseNameAndNamespace, parsePackage } from './elm-package-detector';
+import test from 'node:test';
+import assert from 'node:assert';
+import { buildSnapshot, createBuildTarget, parseNameAndNamespace, parsePackage } from './elm-package-detector.ts';
 
 test('builds snapshot for valid elm.json', () => {
   const { manifests, detector, job, version, scanned } = buildSnapshot(
@@ -7,15 +8,15 @@ test('builds snapshot for valid elm.json', () => {
     'awesome detect',
     '42',
   );
-  expect(detector).toEqual({
+  assert.strictEqual(detector, {
     'name': 'kachick/elm-dependency-submission',
     'url': 'https://github.com/kachick/elm-dependency-submission',
     'version': '0.0.1',
   });
-  expect(job).toEqual({ 'correlator': 'awesome detect: emobu/elm.json', 'id': '42' });
-  expect(version).toEqual(0);
-  expect(scanned).toEqual(expect.stringMatching('\\d{4}-\\d{2}-\\d{2}T\\S+'));
-  expect(JSON.parse(JSON.stringify(manifests['emobu/elm.json'])).resolved).toEqual({
+  assert.strictEqual(job, { 'correlator': 'awesome detect: emobu/elm.json', 'id': '42' });
+  assert.strictEqual(version, 0);
+  assert.match(scanned, /\\d{4}-\\d{2}-\\d{2}T\\S+/);
+  assert.strictEqual(JSON.parse(JSON.stringify(manifests['emobu/elm.json'])).resolved, {
     'pkg:elm/elm-community/list-extra@8.7.0': {
       'dependencies': [],
       'package_url': 'pkg:elm/elm-community/list-extra@8.7.0',
@@ -92,17 +93,16 @@ test('builds snapshot for valid elm.json', () => {
 });
 
 test('throws an error when given an invalid format of elm.json', () => {
-  expect(() => createBuildTarget(JSON.stringify({ 'thisFieldIsNotAnElmJSON': 42 }), 'elm.json')).toThrow(
+  assert.throws(
+    () => createBuildTarget(JSON.stringify({ 'thisFieldIsNotAnElmJSON': 42 }), 'elm.json'),
     /given file is an invalid format of elm.json/,
   );
 });
 
 test('handles github repository', () => {
-  expect(parseNameAndNamespace('elm-community/list-extra')).toStrictEqual(['elm-community', 'list-extra']);
+  assert.strictEqual(parseNameAndNamespace('elm-community/list-extra'), ['elm-community', 'list-extra']);
 });
 
 test('parsePackage', () => {
-  expect(parsePackage('elm-explorations/test', '2.1.0').toString()).toStrictEqual(
-    'pkg:elm/elm-explorations/test@2.1.0',
-  );
+  assert.strictEqual(parsePackage('elm-explorations/test', '2.1.0').toString(), 'pkg:elm/elm-explorations/test@2.1.0');
 });
