@@ -26,17 +26,11 @@ jobs:
       - name: Run snapshot action
         uses: kachick/elm-dependency-submission@v1
         with:
-            # Required: GITHUB_TOKEN will work. No needed PAT
-            token: "${{ secrets.GITHUB_TOKEN }}"
-            #
-            # Optional: Default "elm.json". Change it if different in your repository
-            elm-json-path: elm.json
+          #
+          # Optional: Default "elm.json". Change it if different in your repository
+          elm-json-path: elm.json
 ```
 
 You can see the working image at [here](https://github.com/kachick/elm-dependency-submission/network/dependencies). It is parsing [emobu/elm.json](https://github.com/mobu-of-the-world/emobu/blob/main/elm.json).
 
 <img src="./assets/snapshot.png?raw=true" alt="Example of snapshot" width=700>
-
-## NOTE
-
-Author is a newbie of elm-lang...
