@@ -22,9 +22,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: 'Checkout Repository'
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Run snapshot action
-        uses: kachick/elm-dependency-submission@v1
+        uses: kachick/elm-dependency-submission@v2
         with:
           #
           # Optional: Default "elm.json". Change it if different in your repository
