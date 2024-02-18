@@ -24,7 +24,7 @@ jobs:
       - name: 'Checkout Repository'
         uses: actions/checkout@v4
       - name: Run snapshot action
-        uses: kachick/elm-dependency-submission@v2
+        uses: kachick/elm-dependency-submission@v3
         with:
           #
           # Optional: Default "elm.json". Change it if different in your repository
