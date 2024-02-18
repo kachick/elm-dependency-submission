@@ -38755,10 +38755,19 @@ var require_package_url2 = __commonJS({
       _handlePyPi() {
         this.name = this.name.toLowerCase().replace(/_/g, "-");
       }
+      _handlePub() {
+        this.name = this.name.toLowerCase();
+        if (!/^[a-z0-9_]+$/i.test(this.name)) {
+          throw new Error("Invalid purl: contains an illegal character.");
+        }
+      }
       toString() {
         var purl = ["pkg:", encodeURIComponent(this.type), "/"];
         if (this.type === "pypi") {
           this._handlePyPi();
+        }
+        if (this.type === "pub") {
+          this._handlePub();
         }
         if (this.namespace) {
           purl.push(
@@ -38769,7 +38778,7 @@ var require_package_url2 = __commonJS({
         purl.push(encodeURIComponent(this.name).replace(/%3A/g, ":"));
         if (this.version) {
           purl.push("@");
-          purl.push(encodeURIComponent(this.version).replace(/%3A/g, ":"));
+          purl.push(encodeURIComponent(this.version).replace(/%3A/g, ":").replace(/%2B/g, "+"));
         }
         if (this.qualifiers) {
           purl.push("?");
@@ -38792,7 +38801,8 @@ var require_package_url2 = __commonJS({
         if (!purl || typeof purl !== "string" || !purl.trim()) {
           throw new Error("A purl string argument is required.");
         }
-        let [scheme, remainder] = purl.split(":", 2);
+        let scheme = purl.slice(0, purl.indexOf(":"));
+        let remainder = purl.slice(purl.indexOf(":") + 1);
         if (scheme !== "pkg") {
           throw new Error('purl is missing the required "pkg" scheme component.');
         }
@@ -38825,7 +38835,7 @@ var require_package_url2 = __commonJS({
           let index = path.indexOf("@");
           let rawVersion = path.substring(index + 1);
           version2 = decodeURIComponent(rawVersion);
-          let versionEncoded = encodeURIComponent(version2).replace(/%3A/g, ":");
+          let versionEncoded = encodeURIComponent(version2).replace(/%3A/g, ":").replace(/%2B/g, "+");
           if (rawVersion !== versionEncoded) {
             throw new Error("Invalid purl: version must be percent-encoded");
           }
