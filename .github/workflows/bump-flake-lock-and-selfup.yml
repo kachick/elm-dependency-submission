@@ -17,6 +17,7 @@ jobs:
       dry-run: ${{ github.event_name == 'pull_request' }}
       optional-run: |
         nix develop --command bash -c 'node --version | tr -d v' > .node-version
+        git add .node-version
         # https://stackoverflow.com/q/34807971
         git update-index -q --really-refresh
         git diff-index --quiet HEAD || git commit -m 'Update .node-version' .node-version
