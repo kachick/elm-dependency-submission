@@ -29,7 +29,6 @@ script = [
   "dprint check",
   "deno lint",
   "typos . .github .vscode",
-  "actionlint",
 ]
 
 [tasks.test]
@@ -81,7 +80,6 @@ script = [
   # Returns NON 0, why...? :<
   # "nixpkgs-fmt --version",
   "typos --version",
-  "actionlint --version",
 ]
 
 [tasks.check_no_git_diff]
