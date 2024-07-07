@@ -22,7 +22,8 @@ permissions:
   contents: write
 
 jobs:
-  validate: # make sure the action works on a clean machine without building
+  # make sure the action works on a clean machine without building
+  validate:
     runs-on: ubuntu-24.04
     timeout-minutes: 15
     steps:
